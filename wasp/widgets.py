@@ -450,7 +450,9 @@ class Slider():
             v = 0
         elif v >= self._steps:
             v = self._steps - 1
+        changed = self.value != v
         self.value = v
+        return changed
 
 class Spinner():
     """A simple Spinner widget.
