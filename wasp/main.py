@@ -4,3 +4,4 @@
 import wasp
 from gadgetbridge import *
 wasp.system.schedule()
+wasp.system.register('apps.SleepTk.SleepTkApp')
