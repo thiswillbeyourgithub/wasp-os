@@ -49,3 +49,4 @@ wasp.system.blank_after = 300
 #    )
 
 wasp.system.run()
+wasp.system.register("apps.ZzzTracker.ZzzTrackerApp")

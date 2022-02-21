@@ -2,6 +2,7 @@
 # Copyright (C) 2020 Daniel Thompson
 
 import time
+import random
 def sleep_ms(ms):
     time.sleep(ms / 1000)
 time.sleep_ms = sleep_ms
@@ -47,6 +48,12 @@ class Accelerometer:
     @steps.setter
     def steps(self, value):
         self.reset()
+
+    def read_xyz(self):
+        return (int(random.randint(-1000, 1000)),
+                int(random.randint(-1000, 1000)),
+                int(random.randint(-1000, 1000)))
+
 
 class Backlight(object):
     def __init__(self, level=1):
@@ -117,7 +124,7 @@ class RTC(object):
         #if self.uptime < 60:
         #    # Jump back a little over a day
         #    return time.localtime(time.time() - 100000)
-        return time.localtime()[:8]
+        return time.localtime()
 
     def get_time(self):
         now = self.get_localtime()
