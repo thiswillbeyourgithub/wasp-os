@@ -49,3 +49,10 @@ class BMA421:
         if value != 0:
             raise ValueError()
         self._dev.reset_step_counter()
+
+    def read_xyz(self):
+        """Report the orientation of the device"""
+        data_tuple = bma42x.BMA42X.read_accel_xyz(self._dev)
+        return (data_tuple[1],
+                data_tuple[0],
+                -data_tuple[2])
