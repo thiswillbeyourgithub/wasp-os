@@ -12,3 +12,4 @@ wasp/boards/*/watch.py
 .idea
 .vscode
 wasp/apps/SleepTk.py
+logs
