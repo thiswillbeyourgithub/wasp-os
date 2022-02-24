@@ -65,7 +65,7 @@ class TimerApp():
         self.minutes = widgets.Spinner(50, 60, 0, 99, 2)
         self.seconds = widgets.Spinner(130, 60, 0, 59, 2)
         self.current_alarm = None
-        self.periodic_check = None
+        self.chime_check = None
         self.n_vibr = 0
         self.n_vibr_total = 0
 
@@ -89,7 +89,7 @@ class TimerApp():
             wasp.watch.vibrator.pulse(duty=50, ms=500)
             wasp.system.keep_awake()
 
-            if self.periodic_check.state:
+            if self.chime_check.state:
                 self.n_vibr += 1
                 self.n_vibr_total += 1
                 if self.n_vibr >= _CHIME_BUZZ:
@@ -98,16 +98,16 @@ class TimerApp():
 
                     if self.n_vibr_total >= _CHIME_MAX * _CHIME_BUZZ:
                         self.n_vibr_total = 0
-                        self.periodic_check.state = False
-                        self.periodic_check.draw()
+                        self.chime_check.state = False
+                        self.chime_check.draw()
                     else:
                         self._start()
         self._update()
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
-        if self.periodic_check.touch(event):
-            self.periodic_check.draw()
+        if self.chime_check.touch(event):
+            self.chime_check.draw()
         elif self.state == _RINGING:
             mute = wasp.watch.display.mute
             mute(True)
@@ -144,9 +144,9 @@ class TimerApp():
         sbar.clock = True
         sbar.draw()
 
-        if self.periodic_check is None:
-            self.periodic_check = widgets.Checkbox(0, 40, "Chime")
-        self.periodic_check.draw()
+        if self.chime_check is None:
+            self.chime_check = widgets.Checkbox(0, 40, "Chime")
+        self.chime_check.draw()
 
         if self.state == _RINGING:
             draw.set_font(fonts.sans24)
@@ -193,6 +193,6 @@ class TimerApp():
 
     def _alert(self):
         self.state = _RINGING
-        if not self.periodic_check.state:
+        if not self.chime_check.state:
             wasp.system.wake()
             wasp.system.switch(self)
