@@ -51,7 +51,6 @@ _RUNNING = const(1)
 _RINGING = const(2)
 _CHIME_BUZZ = const(2)  # auto stop vibrating after _CHIME_BUZZ vibrations
 _CHIME_MAX = const(100)  # auto stop chime after 100 runs
-_CHIME_MAX = const(2)  # auto stop chime after 100 runs
 
 _BUTTON_Y = const(200)
 
@@ -107,7 +106,6 @@ class TimerApp():
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
-        print("touch")
         if self.periodic_check.touch(event):
             self.periodic_check.draw()
         elif self.state == _RINGING:
