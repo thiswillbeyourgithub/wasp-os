@@ -14,7 +14,6 @@ An application to set a vibration in a specified amount of time. Like a kitchen 
 
 import wasp
 import fonts
-import time
 import widgets
 import math
 from micropython import const
@@ -52,6 +51,7 @@ _RUNNING = const(1)
 _RINGING = const(2)
 _CHIME_BUZZ = const(2)  # auto stop vibrating after _CHIME_BUZZ vibrations
 _CHIME_MAX = const(100)  # auto stop chime after 100 runs
+_CHIME_MAX = const(2)  # auto stop chime after 100 runs
 
 _BUTTON_Y = const(200)
 
@@ -66,6 +66,9 @@ class TimerApp():
         self.minutes = widgets.Spinner(50, 60, 0, 99, 2)
         self.seconds = widgets.Spinner(130, 60, 0, 59, 2)
         self.current_alarm = None
+        self.periodic_check = None
+        self.n_vibr = 0
+        self.n_vibr_total = 0
 
         self.minutes.value = 10
         self.state = _STOPPED
@@ -86,11 +89,28 @@ class TimerApp():
         if self.state == _RINGING:
             wasp.watch.vibrator.pulse(duty=50, ms=500)
             wasp.system.keep_awake()
+
+            if self.periodic_check.state:
+                self.n_vibr += 1
+                self.n_vibr_total += 1
+                if self.n_vibr >= _CHIME_BUZZ:
+                    self.n_vibr = 0
+                    self._stop()
+
+                    if self.n_vibr_total >= _CHIME_MAX * _CHIME_BUZZ:
+                        self.n_vibr_total = 0
+                        self.periodic_check.state = False
+                        self.periodic_check.draw()
+                    else:
+                        self._start()
         self._update()
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
-        if self.state == _RINGING:
+        print("touch")
+        if self.periodic_check.touch(event):
+            self.periodic_check.draw()
+        elif self.state == _RINGING:
             mute = wasp.watch.display.mute
             mute(True)
             self._stop()
@@ -125,6 +145,10 @@ class TimerApp():
         sbar = wasp.system.bar
         sbar.clock = True
         sbar.draw()
+
+        if self.periodic_check is None:
+            self.periodic_check = widgets.Checkbox(0, 40, "Chime")
+        self.periodic_check.draw()
 
         if self.state == _RINGING:
             draw.set_font(fonts.sans24)
