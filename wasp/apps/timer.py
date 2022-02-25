@@ -91,10 +91,12 @@ class TimerApp():
             if self.chime_check.state:
                 self.n_vibr += 1
                 if self.n_vibr % _CHIME_BUZZ == 0:
+                    # vibrated _CHIME_BUZZ times so chime was successful
                     self._stop()
                     if self.n_vibr / _CHIME_BUZZ < _CHIME_MAX:
+                        # start another run directly
                         self._start()
-                    else:
+                    else:  # stop chime from going on continuously for days
                         self.n_vibr = 0
                         self.chime_check.state = False
                         self.chime_check.draw()
