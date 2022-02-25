@@ -67,7 +67,6 @@ class TimerApp():
         self.current_alarm = None
         self.chime_check = widgets.Checkbox(0, 40, "Chime")
         self.n_vibr = 0
-        self.n_vibr_total = 0
 
         self.minutes.value = 10
         self.state = _STOPPED
@@ -91,21 +90,19 @@ class TimerApp():
 
             if self.chime_check.state:
                 self.n_vibr += 1
-                self.n_vibr_total += 1
-                if self.n_vibr >= _CHIME_BUZZ:
-                    self.n_vibr = 0
+                if self.n_vibr % _CHIME_BUZZ == 0:
                     self._stop()
-
-                    if self.n_vibr_total >= _CHIME_MAX * _CHIME_BUZZ:
-                        self.n_vibr_total = 0
+                    if self.n_vibr / _CHIME_BUZZ < _CHIME_MAX:
+                        self._start()
+                    else:
+                        self.n_vibr = 0
                         self.chime_check.state = False
                         self.chime_check.draw()
-                    else:
-                        self._start()
         self._update()
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
+        self.n_vibr = 0
         if self.chime_check.touch(event):
             self.chime_check.draw()
         elif self.state == _RINGING:
