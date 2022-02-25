@@ -193,5 +193,6 @@ class TimerApp():
     def _alert(self):
         self.state = _RINGING
         wasp.system.wake()
-        if not self.chime_check.state:
-            wasp.system.switch(self)
+        wasp.system.switch(self)
+        if self.chime_check.state:
+            wasp.watch.display.mute(True)
