@@ -65,7 +65,7 @@ class TimerApp():
         self.minutes = widgets.Spinner(50, 60, 0, 99, 2)
         self.seconds = widgets.Spinner(130, 60, 0, 59, 2)
         self.current_alarm = None
-        self.chime_check = None
+        self.chime_check = widgets.Checkbox(0, 40, "Chime")
         self.n_vibr = 0
         self.n_vibr_total = 0
 
@@ -144,10 +144,6 @@ class TimerApp():
         sbar.clock = True
         sbar.draw()
 
-        if self.chime_check is None:
-            self.chime_check = widgets.Checkbox(0, 40, "Chime")
-        self.chime_check.draw()
-
         if self.state == _RINGING:
             draw.set_font(fonts.sans24)
             draw.string(self.NAME, 0, 150, width=240)
@@ -156,6 +152,7 @@ class TimerApp():
             self._draw_stop(104, _BUTTON_Y)
             draw.string(':', 110, 120-14, width=20)
             self._update()
+            self.chime_check.draw()
         else:  # _STOPPED
             draw.set_font(fonts.sans28)
             draw.string(':', 110, 120-14, width=20)
@@ -164,6 +161,7 @@ class TimerApp():
             self.seconds.draw()
 
             self._draw_play(114, _BUTTON_Y)
+            self.chime_check.draw()
 
     def _update(self):
         wasp.system.bar.update()
