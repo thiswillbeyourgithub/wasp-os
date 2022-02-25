@@ -50,7 +50,7 @@ _STOPPED = const(0)
 _RUNNING = const(1)
 _RINGING = const(2)
 _CHIME_BUZZ = const(2)  # auto stop vibrating after _CHIME_BUZZ vibrations
-_CHIME_MAX = const(100)  # auto stop chime after 100 runs
+_CHIME_MAX = const(99)  # auto stop chime after 99 runs
 
 _BUTTON_Y = const(200)
 
