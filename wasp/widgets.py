@@ -48,7 +48,7 @@ class BatteryMeter:
             except:
                 mem = "?"
             draw.set_font(fonts.sans18)
-            draw.string(mem, 150, 0)
+            draw.string(mem, 160, 0)
             level = watch.battery.level()
             if level == self.level:
                 return
