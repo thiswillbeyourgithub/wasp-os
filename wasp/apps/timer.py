@@ -85,7 +85,10 @@ class TimerApp():
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.state == _RINGING:
-            wasp.watch.vibrator.pulse(duty=50, ms=500)
+            if not self.chime_check.state:
+                wasp.watch.vibrator.pulse(duty=50, ms=500)
+            else:
+                wasp.watch.vibrator.pulse(duty=50, ms=250)
             wasp.system.keep_awake()
 
             if self.chime_check.state:
