@@ -43,12 +43,13 @@ class BatteryMeter:
                              fg=wasp.system.theme('battery'))
                 self.level = -1
         else:
-            try:
-                mem = str(wasp.gc.mem_free())
-            except:
-                mem = "?"
-            draw.set_font(fonts.sans18)
-            draw.string(mem, 160, 0)
+            if wasp.system._debug_mode:
+                try:
+                    mem = str(wasp.gc.mem_free())
+                except:
+                    mem = "?"
+                draw.set_font(fonts.sans18)
+                draw.string(mem, 160, 0)
             level = watch.battery.level()
             if level == self.level:
                 return
