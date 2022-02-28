@@ -54,27 +54,32 @@ class BatteryMeter:
             if level == self.level:
                 return
 
-            green = level // 3
-            if green > 31:
-                green = 31
-            red = 31-green
-            rgb = (red << 11) + (green << 6)
+            if wasp.system.battery_percent == "Icon":
+                green = level // 3
+                if green > 31:
+                    green = 31
+                red = 31-green
+                rgb = (red << 11) + (green << 6)
 
-            if self.level < 0 or ((level > 5) ^ (self.level > 5)):
-                if level  > 5:
-                    draw.blit(icon, 239-icon[1], 0,
-                             fg=wasp.system.theme('battery'))
-                else:
-                    rgb = 0xf800
-                    draw.blit(icon, 239-icon[1], 0, fg=0xf800)
+                if self.level < 0 or ((level > 5) ^ (self.level > 5)):
+                    if level  > 5:
+                        draw.blit(icon, 239-icon[1], 0,
+                                 fg=wasp.system.theme('battery'))
+                    else:
+                        rgb = 0xf800
+                        draw.blit(icon, 239-icon[1], 0, fg=0xf800)
 
-            w = icon[1] - 10
-            x = 239 - 5 - w
-            h = 2*level // 11
-            if 18 - h:
-                draw.fill(0, x, 9, w, 18 - h)
-            if h:
-                draw.fill(rgb, x, 27 - h, w, h)
+                w = icon[1] - 10
+                x = 239 - 5 - w
+                h = 2*level // 11
+                if 18 - h:
+                    draw.fill(0, x, 9, w, 18 - h)
+                if h:
+                    draw.fill(rgb, x, 27 - h, w, h)
+            elif wasp.system.battery_percent == "Percent":
+                draw.set_font(fonts.sans18)
+                draw.fill(0, 185, 0, 5)
+                draw.string("{}%".format(min(level, 99)), 199, 0)
 
             self.level = level
 

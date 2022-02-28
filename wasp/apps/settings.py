@@ -39,8 +39,9 @@ class SettingsApp():
         self._yy = wasp.widgets.Spinner(160, 60, 20, 60, 2)
         self._units = ['Metric', 'Imperial']
         self._units_toggle = wasp.widgets.Button(32, 90, 176, 48, "Change")
-        self._debug_toggle = wasp.widgets.Button(32, 90, 176, 48, "Change")
-        self._settings = ['Brightness', 'Notification Level', 'Time', 'Date', 'Units', 'Debug']
+        self._batt = ['Percent', 'Icon']
+        self._battery_toggle = wasp.widgets.Button(32, 90, 176, 48, "Change")
+        self._settings = ['Brightness', 'Battery', 'Notification Level', 'Time', 'Date', 'Units']
         self._sett_index = 0
         self._current_setting = self._settings[0]
 
@@ -74,14 +75,9 @@ class SettingsApp():
         elif self._current_setting == 'Units':
             if self._units_toggle.touch(event):
                 wasp.system.units = self._units[(self._units.index(wasp.system.units) + 1) % len(self._units)]
-        elif self._current_setting == 'Debug':
-            if self._debug_toggle.touch(event):
-                draw = wasp.watch.drawable
-                if wasp.system._debug_mode == 0:
-                    wasp.system._debug_mode = 1
-                    draw.string("Debug mode ON", 0, 180)
-                else:
-                    wasp.system._debug_mode = 0
+        elif self._current_setting == 'Battery':
+            if self._battery_toggle.touch(event):
+                wasp.system.battery_percent = self._batt[(self._batt.index(wasp.system.battery_percent) + 1) % len(self._batt)]
         self._update()
 
     def swipe(self, event):
@@ -131,8 +127,8 @@ class SettingsApp():
             draw.string('DD    MM    YY',0,180, width=240)
         elif self._current_setting == 'Units':
             self._units_toggle.draw()
-        elif self._current_setting == 'Debug':
-            self._debug_toggle.draw()
+        elif self._current_setting == 'Battery':
+            self._battery_toggle.draw()
         self._scroll_indicator.draw()
         self._update()
         mute(False)
@@ -160,3 +156,5 @@ class SettingsApp():
             draw.string(say, 0, 150, width=240)
         elif self._current_setting == 'Units':
             draw.string(wasp.system.units, 0, 150, width=240)
+        elif self._current_setting == 'Battery':
+            draw.string(str(wasp.system.battery_percent), 0, 150, width=240)

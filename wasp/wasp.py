@@ -114,6 +114,7 @@ class Manager():
         self.musicinfo = {}
         self.weatherinfo = {}
         self.units = "Metric"
+        self.battery_percent = "Percent"
 
         self._theme = (
                 b'\x7b\xef'     # ble
