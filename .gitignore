@@ -13,4 +13,4 @@ wasp/boards/*/watch.py
 .vscode
 wasp/apps/SleepTk.py
 logs
-./pull_latest_sleep_data.py
+pull_latest_sleep_data.py
