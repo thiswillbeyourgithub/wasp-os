@@ -82,6 +82,10 @@ class TimerApp():
         if self.state == _RINGING:
             self.state = _STOPPED
 
+    def sleep(self):
+        """doesn't exit when screen turns off"""
+        return False
+
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.state == _RINGING:
