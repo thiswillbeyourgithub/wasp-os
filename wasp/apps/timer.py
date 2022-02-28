@@ -84,7 +84,7 @@ class TimerApp():
 
     def sleep(self):
         """doesn't exit when screen turns off"""
-        return False
+        return True
 
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
