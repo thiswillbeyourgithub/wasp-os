@@ -39,8 +39,13 @@ class BatteryMeter:
 
         if watch.battery.charging():
             if self.level != -1:
-                draw.blit(icon, 239-icon[1], 0,
-                             fg=wasp.system.theme('battery'))
+                if wasp.system.battery_percent == "Icon":
+                    draw.blit(icon, 239-icon[1], 0,
+                                 fg=wasp.system.theme('battery'))
+                else:
+                    draw.set_font(fonts.sans18)
+                    draw.string("Charging", x=230, y=0, width=10, right=True)
+
                 self.level = -1
         else:
             if wasp.system._debug_mode:
