@@ -83,7 +83,7 @@ class BatteryMeter:
                     draw.fill(rgb, x, 27 - h, w, h)
             elif wasp.system.battery_percent == "Percent":
                 draw.set_font(fonts.sans18)
-                draw.string(s=" {}%".format(level), x=230, y=0, width=10, right=True)
+                draw.string(s="   {}%".format(level), x=220, y=0, width=20, right=True)
 
             self.level = level
 
