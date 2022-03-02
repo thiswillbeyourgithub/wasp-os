@@ -64,12 +64,30 @@ class MorseApp():
     def __init__(self):
         self.letter = ""
         self.text = [""]
-        pass
 
     def foreground(self):
+        print(self.text)
+        try:
+            f = open("Morse.txt", "r")
+            text = "".join(f.readlines()).replace("\n", "%").replace("%%", "%")
+            f.close()
+            text = text.split("%")
+            if len(text) > _MAXLINES:
+                text = text[-_MAXLINES:]
+            self.text = text
+        except:
+            self.text = [""]
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH |
                                   wasp.EventMask.SWIPE_UPDOWN)
+
+    def background(self):
+        print(self.text)
+        text = "%".join(self.text)
+        f = open("Morse.txt", "w")
+        for line in text:
+            f.write(line)
+        f.close()
 
     def swipe(self, event):
         if len(self.letter) < _MAXINPUT:
