@@ -172,6 +172,7 @@ class Manager():
         self.register('apps.timer.TimerApp', True, no_except=True)
         self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
         #self.register('apps.heart.HeartApp', True, no_except=True)
+        self.register('apps.Morse.MorseApp', True, no_except=True)
 
         #self.register('apps.faces.FacesApp', no_except=True)
         self.register('apps.settings.SettingsApp', no_except=True)
