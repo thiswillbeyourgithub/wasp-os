@@ -36,30 +36,18 @@ class BatteryMeter:
         """
         icon = icons.battery
         draw = watch.drawable
+        level = watch.battery.level()
 
-        if watch.battery.charging():
-            if self.level != -1:
-                if wasp.system.battery_percent == "Icon":
+        if level == self.level:
+            return
+
+        if wasp.system.battery_percent == "Icon":
+            if watch.battery.charging():
+                if self.level != -1:
                     draw.blit(icon, 239-icon[1], 0,
                                  fg=wasp.system.theme('battery'))
-                else:
-                    draw.set_font(fonts.sans18)
-                    draw.string("Charging", x=230, y=0, width=10, right=True)
-
-                self.level = -1
-        else:
-            if wasp.system._debug_mode:
-                try:
-                    mem = str(wasp.gc.mem_free())
-                except:
-                    mem = "?"
-                draw.set_font(fonts.sans18)
-                draw.string(mem, 160, 0)
-            level = watch.battery.level()
-            if level == self.level:
-                return
-
-            if wasp.system.battery_percent == "Icon":
+                    self.level = -1
+            else:
                 green = level // 3
                 if green > 31:
                     green = 31
@@ -81,11 +69,18 @@ class BatteryMeter:
                     draw.fill(0, x, 9, w, 18 - h)
                 if h:
                     draw.fill(rgb, x, 27 - h, w, h)
-            elif wasp.system.battery_percent == "Percent":
-                draw.set_font(fonts.sans18)
-                draw.string(s="   {}%".format(level), x=220, y=0, width=20, right=True)
+        elif wasp.system.battery_percent == "Percent":
+            draw.set_font(fonts.sans18)
+            if watch.battery.charging():
+                col = 0x4CC0 # green
+            elif level <= 30:
+                col =  0xE945 # red
+            else:
+                col = 0xFFFF
+            draw.set_color(col)
+            draw.string(s="   {}%".format(level), x=230, y=0, width=10, right=True)
 
-            self.level = level
+        self.level = level
 
 class Clock:
     """Small clock widget."""
