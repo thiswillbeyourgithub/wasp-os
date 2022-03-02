@@ -53,6 +53,7 @@ class SoftwareApp():
         #db.append(('timer', factory('Timer')))
         #db.append(('weather', factory('Weather')))
         db.append(('SleepTk', factory('SleepTk')))
+        db.append(('heart', factory('Heart')))
 
         # Handle user-loaded applications
         try:
