@@ -48,4 +48,5 @@ wasp.system.blank_after = 300
 #        b'\x00\x0f'     # contrast
 #    )
 
+wasp.system.register('apps.Morse.MorseApp')
 wasp.system.run()
