@@ -11,6 +11,7 @@ information when applications crash.
 
 import wasp
 import icons
+import fonts
 
 import io
 import sys
@@ -68,9 +69,11 @@ class PagerApp():
         i = page * 9
         j = i + 11
         chunks = self._chunks[i:j]
+        draw.set_font(fonts.sans18)
         for i in range(len(chunks)-1):
             sub = self._msg[chunks[i]:chunks[i+1]].rstrip()
             draw.string(sub, 0, 24*i)
+        draw.reset()
 
         scroll = self._scroll
         scroll.up = page > 0
