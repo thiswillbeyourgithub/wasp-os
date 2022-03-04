@@ -29,8 +29,8 @@ _HEIGHT = const(240)
 _MAXINPUT = const(16)
 
 # These two need to match
-_FONTH = const(24)
-_FONT = fonts.sans24
+_FONTH = const(18)
+_FONT = fonts.sans18
 
 # Precomputed for efficiency
 _LINEH = const(30) # int(_FONTH * 1.25)
@@ -40,7 +40,7 @@ _MAXLINES = const(7) # floor(_HEIGHT / _LINEH) - 1 # the "-1" is the input line
 # The head is the value of the node, the tail are the subtrees:
 # left half of the tail = the next symbol is a dot
 # right half of the tail = the next symbol is a line
-_CODE = " EISH54V?3UF????2ARL?????WP??J?1TNDB6?X??KC??Y??MGZ7?Q??O?8??90"
+_CODE = " eish54v?3uf????2arl?????wp??j?1tndb6?x??kc??y??mgz7?q??o?8??90"
 # Or, letters only:
 #_CODE = " EISHVUF?ARL?WPJTNDBXKCYMGZQO??"
 
