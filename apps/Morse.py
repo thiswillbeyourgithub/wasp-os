@@ -6,7 +6,8 @@
 
 This app is a simple morse translator that also doubles as a notepad.
 Swipe up for a line, swipe down for a dot, tap for end letter, double tap for
-end word.
+end word. Swipe right for space, twice for newline. Swipe left to delete
+character.
 Up to 7 lines of translation will be displayed on a 240x240 screen, and old
 lines will be deleted.
 There is a preview of the next letter at the bottom of the screen.
@@ -41,7 +42,9 @@ _MAXLINES = const(7) # floor(_HEIGHT / _LINEH) - 1 # the "-1" is the input line
 # left half of the tail = the next symbol is a dot
 # right half of the tail = the next symbol is a line
 _CODE = " eish54v?3uf????2arl?????wp??j?1tndb6?x??kc??y??mgz7?q??o?8??90"
-# Or, letters only:
+# uppercase:
+#_CODE = " EISH54V?3UF????2ARL?????WP??J?1TNDB6?X??KC??Y??MGZ7?Q??O?8??90"
+# letters only:
 #_CODE = " EISHVUF?ARL?WPJTNDBXKCYMGZQO??"
 
 class MorseApp():
@@ -78,6 +81,7 @@ class MorseApp():
             self.text = [""]
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH |
+                                  wasp.EventMask.SWIPE_LEFTRIGHT |
                                   wasp.EventMask.SWIPE_UPDOWN)
 
     def background(self):
@@ -88,13 +92,27 @@ class MorseApp():
         f.close()
 
     def swipe(self, event):
-        if len(self.letter) < _MAXINPUT:
-            self.letter += "-" if event[0] == wasp.EventType.UP else "."
-            self._update()
+        if event[0] == wasp.EventType.LEFT:
+            if self.text[-1] == "" and len(self.text) > 1:
+                self.text.pop(-1)
+            else:
+                self.text[-1] = str(self.text[-1])[:-1]
+            self._draw()
+        elif event[0] == wasp.EventType.RIGHT:
+            if self.text[-1].endswith(" "):
+                self.text.append("")
+                self._draw()
+            else:
+                self._add_letter(" ")
+        else:
+            if len(self.letter) < _MAXINPUT:
+                self.letter += "-" if event[0] == wasp.EventType.UP else "."
+                self._update()
 
     def touch(self, event):
-        addition = self._lookup(self.letter)
-        self.letter = ""
+        self._add_letter(self._lookup(self.letter))
+
+    def _add_letter(self, addition):
         merged = self.text[-1] + addition
         # Check if the new text overflows the screen and add a new line if that's the case
         split = wasp.watch.drawable.wrap(merged, _WIDTH)
@@ -108,6 +126,7 @@ class MorseApp():
             self._draw()
         else:
             self.text[-1] = merged
+        self.letter = ""
         self._update()
 
     def _draw(self):
