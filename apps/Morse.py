@@ -66,7 +66,6 @@ class MorseApp():
         self.text = [""]
 
     def foreground(self):
-        print(self.text)
         try:
             f = open("Morse.txt", "r")
             text = "".join(f.readlines()).replace("\n", "%").replace("%%", "%")
@@ -82,7 +81,6 @@ class MorseApp():
                                   wasp.EventMask.SWIPE_UPDOWN)
 
     def background(self):
-        print(self.text)
         text = "%".join(self.text)
         f = open("Morse.txt", "w")
         for line in text:
