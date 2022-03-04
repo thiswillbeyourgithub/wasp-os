@@ -118,7 +118,7 @@ class Clock:
             t1 = '{:02}:{:02}'.format(now[3], now[4])
 
             draw = wasp.watch.drawable
-            draw.set_font(fonts.sans28)
+            draw.set_font(fonts.sans18)
             draw.set_color(wasp.system.theme('status-clock'))
             draw.string(t1, 52, 4, 138)
 
