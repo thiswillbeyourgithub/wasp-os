@@ -93,12 +93,15 @@ class MorseApp():
 
     def swipe(self, event):
         if event[0] == wasp.EventType.LEFT:
-            if self.text[-1] == "" and len(self.text) > 1:
-                self.text.pop(-1)
-            else:
-                self.text[-1] = str(self.text[-1])[:-1]
+            if self.letter == "":
+                if self.text[-1] == "" and len(self.text) > 1:
+                    self.text.pop(-1)
+                else:
+                    self.text[-1] = str(self.text[-1])[:-1]
             self.letter = ""
-            self._draw()
+            self.text[-1] = "{}  ".format(self.text[-1])  # adds space, otherwise the screen will not be erased there
+            self._update()
+            self.text[-1] = str(self.text[-1])[:-2]  # removes space
         elif event[0] == wasp.EventType.RIGHT:
             if self.text[-1].endswith(" "):
                 self.text.append("")
