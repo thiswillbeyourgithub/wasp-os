@@ -97,6 +97,7 @@ class MorseApp():
                 self.text.pop(-1)
             else:
                 self.text[-1] = str(self.text[-1])[:-1]
+            self.letter = ""
             self._draw()
         elif event[0] == wasp.EventType.RIGHT:
             if self.text[-1].endswith(" "):
