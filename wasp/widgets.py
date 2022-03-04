@@ -79,6 +79,7 @@ class BatteryMeter:
                 col = 0xFFFF
             draw.set_color(col)
             draw.string(s="  {}%".format(level), x=230, y=0, width=10, right=True)
+            draw.reset()
 
         self.level = level
 
