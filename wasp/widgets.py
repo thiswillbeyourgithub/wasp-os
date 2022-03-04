@@ -310,7 +310,7 @@ class Checkbox():
         im = self._im
         if im[2]:
             draw.set_color(wasp.system.theme('bright'))
-            draw.set_font(fonts.sans24)
+            draw.set_font(fonts.sans18)
             draw.string(im[2], im[0], im[1]+6)
         self.update()
 

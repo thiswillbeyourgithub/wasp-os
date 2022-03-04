@@ -6,7 +6,7 @@
 """
 
 import array
-import fonts.sans24
+import fonts.sans18
 import math
 import micropython
 
@@ -124,7 +124,7 @@ class Draw565(object):
         Default colours are white-on-block (white foreground, black
         background) and the default font is 24pt Sans Serif."""
         self.set_color(0xffff)
-        self.set_font(fonts.sans24)
+        self.set_font(fonts.sans18)
 
     def fill(self, bg=None, x=0, y=0, w=None, h=None):
         """Draw a solid colour rectangle.
