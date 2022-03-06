@@ -134,7 +134,7 @@ class Manager():
 
         self._alarms = []
         self._brightness = 1
-        self._notifylevel = 1
+        self._notifylevel = 2
         self._debug_mode = 0
         if 'P8' in watch.os.uname().machine:
             self._nfylevels = [0, 225, 450]
