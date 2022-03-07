@@ -176,8 +176,8 @@ class Manager():
         #self.register('apps.faces.FacesApp', no_except=True)
         self.register('apps.settings.SettingsApp', no_except=True)
         self.register('apps.software.SoftwareApp', no_except=True)
-        self.register('apps.SleepTk.SleepTkApp')
-        #self.register('apps.Morse.MorseApp')
+        self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
+        #self.register('apps.Morse.MorseApp', False, no_except=True)
 
     def register(self, app, quick_ring=False, watch_face=False, no_except=False):
         """Register an application with the system.
