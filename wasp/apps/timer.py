@@ -49,8 +49,8 @@ icon = (
 _STOPPED = const(0)
 _RUNNING = const(1)
 _RINGING = const(2)
-_CHIME_BUZZ = const(2)  # auto stop vibrating after _CHIME_BUZZ vibrations
-_CHIME_MAX = const(99)  # auto stop chime after 99 runs
+_REPEAT_BUZZ = const(2)  # auto stop vibrating after _REPEAT_BUZZ vibrations
+_REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 
 _BUTTON_Y = const(200)
 
@@ -65,7 +65,7 @@ class TimerApp():
         self.minutes = widgets.Spinner(50, 60, 0, 99, 2)
         self.seconds = widgets.Spinner(130, 60, 0, 59, 2)
         self.current_alarm = None
-        self.chime_check = widgets.Checkbox(0, 40, "Chime")
+        self.repeat_check = widgets.Checkbox(0, 40, "Repeat")
         self.n_vibr = 0
 
         self.minutes.value = 10
@@ -89,7 +89,7 @@ class TimerApp():
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.state == _RINGING:
-            if not self.chime_check.state:
+            if not self.repeat_check.state:
                 wasp.watch.vibrator.pulse(duty=50, ms=500)
             else:
                 wasp.watch.vibrator.pulse(duty=20, ms=100)
@@ -97,25 +97,25 @@ class TimerApp():
                 wasp.watch.vibrator.pulse(duty=20, ms=250)
             wasp.system.keep_awake()
 
-            if self.chime_check.state:
+            if self.repeat_check.state:
                 self.n_vibr += 1
-                if self.n_vibr % _CHIME_BUZZ == 0:
-                    # vibrated _CHIME_BUZZ times so chime was successful
+                if self.n_vibr % _REPEAT_BUZZ == 0:
+                    # vibrated _REPEAT_BUZZ times so repeat was successful
                     self._stop()
-                    if self.n_vibr / _CHIME_BUZZ < _CHIME_MAX:
+                    if self.n_vibr / _REPEAT_BUZZ < _REPEAT_MAX:
                         # start another run directly
                         self._start()
-                    else:  # stop chime from going on continuously for days
+                    else:  # stop repeat from going on continuously for days
                         self.n_vibr = 0
-                        self.chime_check.state = False
-                        self.chime_check.draw()
+                        self.repeat_check.state = False
+                        self.repeat_check.draw()
         self._update()
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
         self.n_vibr = 0
-        if self.chime_check.touch(event):
-            self.chime_check.draw()
+        if self.repeat_check.touch(event):
+            self.repeat_check.draw()
         elif self.state == _RINGING:
             mute = wasp.watch.display.mute
             mute(True)
@@ -160,9 +160,9 @@ class TimerApp():
             self._draw_stop(104, _BUTTON_Y)
             draw.string(':', 110, 120-14, width=20)
             self._update()
-            self.chime_check.draw()
+            self.repeat_check.draw()
             draw.set_font(fonts.sans18)
-            draw.string("Run #{}".format(self.n_vibr // _CHIME_BUZZ), 150, 220)
+            draw.string("Run #{}".format(self.n_vibr // _REPEAT_BUZZ), 150, 220)
         else:  # _STOPPED
             draw.set_font(fonts.sans28)
             draw.string(':', 110, 120-14, width=20)
@@ -171,7 +171,7 @@ class TimerApp():
             self.seconds.draw()
 
             self._draw_play(114, _BUTTON_Y)
-            self.chime_check.draw()
+            self.repeat_check.draw()
 
     def _update(self):
         wasp.system.bar.update()
@@ -203,5 +203,5 @@ class TimerApp():
         self.state = _RINGING
         wasp.system.wake()
         wasp.system.switch(self)
-        if self.chime_check.state:
+        if self.repeat_check.state:
             wasp.watch.display.mute(True)
