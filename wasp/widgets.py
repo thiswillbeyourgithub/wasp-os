@@ -23,6 +23,7 @@ class BatteryMeter:
     """
     def __init__(self):
         self.level = -2
+        self.levels = [50, 50]
 
     def draw(self):
         """Draw from meter (from scratch)."""
@@ -38,8 +39,12 @@ class BatteryMeter:
         draw = watch.drawable
         level = watch.battery.level()
 
-        if level == self.level:
+        if level in self.levels:
             return
+        else:
+            self.levels.pop(0)
+            self.levels.append(level)
+            self.level = int(sum(self.levels)/2)
 
         if wasp.system.battery_percent == "Icon":
             if watch.battery.charging():
