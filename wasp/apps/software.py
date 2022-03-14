@@ -50,7 +50,7 @@ class SoftwareApp():
         db.append(('sports', factory('Sports')))
         db.append(('flashlight', factory('Torch')))
         #db.append(('testapp', factory('Test')))
-        #db.append(('timer', factory('Timer')))
+        db.append(('timer', factory('Timer')))
         #db.append(('weather', factory('Weather')))
         db.append(('SleepTk', factory('SleepTk')))
         db.append(('heart', factory('Heart')))
