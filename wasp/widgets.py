@@ -39,15 +39,15 @@ class BatteryMeter:
         draw = watch.drawable
         level = watch.battery.level()
 
-        if len(self.levels) == 0:  # init values
-            self.levels = [level, level, level]
-
         if level in self.levels:
             return
 
+        if len(self.levels) == 0:  # init values
+            self.levels = [level, level, level]
+
         del self.levels[0]
         self.levels.append(level)
-        self.level = sum(self.levels) // 3
+        level = sum(self.levels) // 3
 
         if wasp.system.battery_percent == "Icon":
             if watch.battery.charging():
