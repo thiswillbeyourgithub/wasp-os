@@ -42,7 +42,7 @@ class BatteryMeter:
         if len(self.levels) == 0:  # init values
             self.levels = [level, level, level]
 
-        if level == self.level:
+        if level in self.levels:
             return
 
         del self.levels[0]
