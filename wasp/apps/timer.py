@@ -63,7 +63,7 @@ class TimerApp():
     def __init__(self):
         """Initialize the application."""
         self.minutes = widgets.Spinner(50, 60, 0, 99, 2)
-        self.seconds = widgets.Spinner(130, 60, 0, 59, 2)
+        self.seconds = widgets.Spinner(130, 60, 0, 59, 2, 5)
         self.current_alarm = None
         self.repeat_check = widgets.Checkbox(0, 40, "Repeat")
         self.n_vibr = 0
