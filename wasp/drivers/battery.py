@@ -75,7 +75,7 @@ class Battery(object):
             return 0
         if level not in self._levels:
             self._levels.append(level)
-            while len(self._levels) > 3:
+            while len(self._levels) > 2:
                 self.levels.pop(0)
         level = sum(self._levels) // len(self._levels)
         return level
