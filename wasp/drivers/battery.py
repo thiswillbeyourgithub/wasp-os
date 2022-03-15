@@ -34,7 +34,7 @@ class Battery(object):
 
         :returns: True if the battery is charging, False otherwise.
         """
-        return self._charging.value() 
+        return self._charging.value()
 
     def power(self):
         """Check whether the device has external power.
@@ -76,6 +76,6 @@ class Battery(object):
         if level not in self._levels:
             self._levels.append(level)
             while len(self._levels) > 2:
-                self.levels.pop(0)
+                self._levels.pop(0)
         level = sum(self._levels) // len(self._levels)
         return level
