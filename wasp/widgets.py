@@ -120,7 +120,7 @@ class Clock:
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans18)
             draw.set_color(wasp.system.theme('status-clock'))
-            draw.string(t1, 52, 4, 138)
+            draw.string(t1, 52, 0, 138)
 
         self.on_screen = now
         return now
