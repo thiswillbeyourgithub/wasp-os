@@ -486,6 +486,8 @@ class Spinner():
                 self.value -= im[5]
                 if self.value < im[2]:
                     self.value = im[3]
+            while self.value % im[5] != 0:
+                self.value -= 1
 
             self.update()
             return True
