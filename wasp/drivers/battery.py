@@ -62,8 +62,12 @@ class Battery(object):
         The current the estimation approach is extremely simple. It is assumes
         the discharge from 4v to 3.5v is roughly linear and 4v is 100% and
         that 3.5v is 5%. Below 3.5v the voltage will start to drop pretty
-        sharply to we will drop from 5% to 0% pretty fast... but we'll
+        sharply so we will drop from 5% to 0% pretty fast... but we'll
         live with that for now.
+
+        The last few values are kept in a cache and only the average of those
+        few values is shown to the user, this is to avoid the battery level
+        going up and down values because of the lack of precision of the mv
 
         :returns: Estimate battery level in percent.
         """
