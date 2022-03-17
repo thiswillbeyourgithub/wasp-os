@@ -92,9 +92,9 @@ class TimerApp():
             if not self.repeat_check.state:
                 wasp.watch.vibrator.pulse(duty=50, ms=500)
             else:
-                wasp.watch.vibrator.pulse(duty=20, ms=100)
-                wasp.watch.time.sleep(0.4)
-                wasp.watch.vibrator.pulse(duty=20, ms=250)
+                for i in range(10):
+                    wasp.watch.vibrator.pulse(duty=30, ms=20)
+                    wasp.watch.time.sleep(0.1)
             wasp.system.keep_awake()
 
             if self.repeat_check.state:
