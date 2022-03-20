@@ -26,7 +26,7 @@ class Battery(object):
         self._battery = ADC(battery)
         self._charging = charging
         self._power = power
-        self._levels = []
+        self.levels = []
 
     @micropython.native
     def charging(self):
@@ -75,14 +75,14 @@ class Battery(object):
         mv = self.voltage_mv()
         level = ((19 * mv) // 100) - 660
         if level >= 100:
-            self._levels = [100]
+            self.levels = [100]
             return 100
         if level <= 0:
-            self._levels = [0]
+            self.levels = [0]
             return 0
-        if level not in self._levels:
-            self._levels.append(level)
-            while len(self._levels) > 3:
-                self._levels.pop(0)
-        level = min(self._levels)
+        if level not in self.levels:
+            self.levels.append(level)
+            while len(self.levels) > 3:
+                self.levels.pop(0)
+        level = min(self.levels)
         return level
