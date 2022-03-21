@@ -129,6 +129,11 @@ class TimerApp():
             else:
                 y = event[2]
                 if y >= _BUTTON_Y:
+                    if self.repeat_check.state:  # reduce by one second if repeating, to avoid growing offset
+                        total = self.minutes.value * 60 + self.seconds.value - 1
+                        if total > 2:
+                            self.minutes.value = total // 60
+                            self.seconds.value = total % 60
                     self._start()
 
 
