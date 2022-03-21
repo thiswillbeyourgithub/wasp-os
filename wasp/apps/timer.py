@@ -92,9 +92,7 @@ class TimerApp():
             if not self.repeat_check.state:
                 wasp.watch.vibrator.pulse(duty=50, ms=500)
             else:
-                for i in range(8):
-                    wasp.watch.vibrator.pulse(duty=30, ms=20)
-                    wasp.watch.time.sleep(0.1)
+                wasp.watch.vibrator.pulse(duty=50, ms=2000)
             wasp.system.keep_awake()
 
             if self.repeat_check.state:
@@ -130,8 +128,8 @@ class TimerApp():
                 y = event[2]
                 if y >= _BUTTON_Y:
                     if self.repeat_check.state:  # reduce by one second if repeating, to avoid growing offset
-                        total = self.minutes.value * 60 + self.seconds.value - 1
-                        if total > 2:
+                        total = self.minutes.value * 60 + self.seconds.value - 2
+                        if total > 60:
                             self.minutes.value = total // 60
                             self.seconds.value = total % 60
                     self._start()
