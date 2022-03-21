@@ -65,9 +65,9 @@ class Battery(object):
         sharply so we will drop from 5% to 0% pretty fast... but we'll
         live with that for now.
 
-        The last few values are kept in a cache and only the minium of those
-        few values is shown to the user, this is to avoid the battery level
-        going up and down values because of the lack of precision of the mv.
+        The last values is kept in a cache and only the minium cached value is
+        shown to the user, this is to avoid the battery level
+        going up and down because of the lack of precision of the mv.
         Note that this will underestimate battery level.
 
         :returns: Estimate battery level in percent.
@@ -81,6 +81,6 @@ class Battery(object):
             levels = set([0])
         elif level not in levels:
             levels.add(level)
-            while len(levels) > 3:
+            while len(levels) > 2:
                 levels.remove(max(levels))
         return min(levels)
