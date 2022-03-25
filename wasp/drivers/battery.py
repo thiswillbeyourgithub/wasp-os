@@ -78,7 +78,7 @@ class Battery(object):
 #            self.levels = set([100])
 #        elif level <= 0:
 #            self.levels = set([0])
-        elif level not in self.levels:
+        if level not in self.levels:
             self.levels.add(level)
             while len(self.levels) > 2:
                 self.levels.remove(max(self.levels))
