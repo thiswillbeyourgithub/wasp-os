@@ -74,10 +74,10 @@ class Battery(object):
         """
         mv = self.voltage_mv()
         level = ((19 * mv) // 100) - 660
-        if level >= 100:
-            self.levels = set([100])
-        elif level <= 0:
-            self.levels = set([0])
+#        if level >= 100:
+#            self.levels = set([100])
+#        elif level <= 0:
+#            self.levels = set([0])
         elif level not in self.levels:
             self.levels.add(level)
             while len(self.levels) > 2:
