@@ -74,7 +74,7 @@ class Battery(object):
     def __init__(self):
         self.voltage = 4.1
         self.step = -0.01
-        self.powered = False
+        self.powered = True
 
     def charging(self):
         self.voltage_mv()
@@ -86,7 +86,7 @@ class Battery(object):
 
     def voltage_mv(self):
         if self.voltage > 4:
-            self.step = -0.01
+            self.step = -0.05
             self.powered = False
         elif self.voltage < 3.4:
             self.step = 0.04
