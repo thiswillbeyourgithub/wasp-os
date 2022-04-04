@@ -73,7 +73,7 @@ class Battery(object):
         :returns: Estimate battery level in percent.
         """
         mv = self.voltage_mv()
-        level = ((18 * mv) // 100) - 660
+        level = int((mv - 3500) / (700) * 100)  # 0.7V is 4.2-3.5V
 #        if level >= 100:
 #            self.levels = set([100])
 #        elif level <= 0:
