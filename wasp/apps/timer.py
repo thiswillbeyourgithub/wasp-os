@@ -161,6 +161,7 @@ class TimerApp():
             draw.blit(icon, 73, 50)
         elif self.state == _RUNNING:
             self._draw_stop(104, _BUTTON_Y)
+            draw.set_font(fonts.sans28)
             draw.string(':', 110, 120-14, width=20)
             self._update()
             self.repeat_check.draw()
