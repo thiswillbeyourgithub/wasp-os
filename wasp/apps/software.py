@@ -54,6 +54,7 @@ class SoftwareApp():
         db.append(('stopwatch', factory('Stopwatch')))
         #db.append(('weather', factory('Weather')))
         db.append(('SleepTk', factory('SleepTk')))
+        db.append(('Pomodoro', factory('Pomodoro')))
         db.append(('heart', factory('Heart')))
         db.append(('Morse', factory('Morse')))
 
