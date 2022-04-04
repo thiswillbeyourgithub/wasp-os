@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Copyright (C) 2020 Wolfgang Ginolas
-"""Timer Application
-~~~~~~~~~~~~~~~~~~~~
+"""Pomodoro Application
+~~~~~~~~~~~~~~~~~~~~~~~
 
-A pomodoro app, forked from timer.py
+A pomodoro app, forked from timer.py.
 
-    .. figure:: res/PomodoroApp.png
+    .. figure:: res/PomodApp.png
         :width: 179
 
         Screenshot of the Pomodoro Application
@@ -57,7 +57,7 @@ _BUTTON_Y = const(200)
 class PomodoroApp():
     """Allows the user to set a vibration alarm.
     """
-    NAME = 'Pomodoro'
+    NAME = 'Pomod'
     ICON = icon
 
     def __init__(self):
