@@ -199,4 +199,3 @@ class PomodoroApp():
         self.state = _RINGING
         wasp.system.wake()
         wasp.system.switch(self)
-        wasp.watch.display.mute(True)
