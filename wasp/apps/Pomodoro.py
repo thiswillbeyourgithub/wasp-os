@@ -152,13 +152,14 @@ class PomodoroApp():
         elif self.state == _RUNNING:
             self._draw_stop(104, _BUTTON_Y)
             t = "Timer 1" if self.n_vibr // _REPEAT_BUZZ % 2 == 0 else "Timer 2"
+            n = self.n_vibr // _REPEAT_BUZZ
+            t += " (#{})".format(n)
             draw.string(t, 10, 60)
             draw.set_font(fonts.sans28)
             draw.string(':', 110, 106, width=20)
 
             self._update()
             draw.set_font(fonts.sans18)
-            draw.string("Run #{}".format(self.n_vibr // _REPEAT_BUZZ), 150, 220)
         else:  # _STOPPED
             draw.string('T1', 56, 50)
             draw.string('T2', 156, 50)
