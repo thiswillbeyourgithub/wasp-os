@@ -80,5 +80,4 @@ class Battery(object):
         """
         mv = self.voltage_mv()
         level = int((mv - 3500) / (700) * 100)  # 0.7V is 4.2-3.5V
-        level = min(100, max(0, level))
-        return level
+        return min(100, max(0, level))
