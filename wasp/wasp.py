@@ -169,6 +169,7 @@ class Manager():
         """Register the default applications."""
         self.register('apps.clock.ClockApp', True, no_except=True)
         #self.register('apps.steps.StepCounterApp', True, no_except=True)
+        self.register('apps.flashlight.TorchApp', True, no_except=True)
 
         self.register('apps.timer.TimerApp', False, no_except=True)
         self.register('apps.stopwatch.StopwatchApp', False, no_except=True)
@@ -179,7 +180,6 @@ class Manager():
         self.register('apps.software.SoftwareApp', False, no_except=True)
         self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
         #self.register('apps.Morse.MorseApp', False, no_except=True)
-        self.register('apps.flashlight.TorchApp', False, no_except=True)
         #self.register('apps.heart.HeartApp', True, no_except=True)
         #self.register('apps.calc.CalculatorApp', False, no_except=True)
 
