@@ -70,6 +70,7 @@ class BatteryMeter:
                     draw.fill(0, x, 9, w, 18 - h)
                 if h:
                     draw.fill(rgb, x, 27 - h, w, h)
+                self.level = level
         elif unit == "Percent" or unit == "mV":
             draw.set_font(fonts.sans18)
             if watch.battery.charging():
@@ -85,8 +86,7 @@ class BatteryMeter:
                 disp = "    {}%".format(level)
             draw.string(disp, x=230, y=0, width=10, right=True)
             draw.reset()
-
-        self.level = level
+            self.level = level
 
 class Clock:
     """Small clock widget."""
