@@ -26,7 +26,7 @@ class Battery(object):
         self._battery = ADC(battery)
         self._charging = charging
         self._power = power
-        self.levels = set()
+        self._cache = set()
 
     @micropython.native
     def charging(self):
@@ -51,10 +51,21 @@ class Battery(object):
 
         Assumes a 50/50 voltage divider and a 3.3v power supply
 
+        The last values is kept in a cache and only the minium cached value is
+        shown to the user, this is to avoid the battery level
+        going up and down because of the lack of precision of the mv.
+        Note that this will underestimate battery level.
+
         :returns: Battery voltage, in millivolts.
         """
         raw = self._battery.read_u16()
-        return (2 * 3300 * raw) // 65535
+        mv = (2 * 3300 * raw) // 65535
+
+        if mv not in self._cache:
+            self._cache.add(mv)
+            while len(self._cache) > 2:
+                self._cache.remove(max(self._cache))
+        return min(self._cache)
 
     def level(self):
         """Estimate the battery level.
@@ -65,21 +76,9 @@ class Battery(object):
         sharply so we will drop from 5% to 0% pretty fast... but we'll
         live with that for now.
 
-        The last values is kept in a cache and only the minium cached value is
-        shown to the user, this is to avoid the battery level
-        going up and down because of the lack of precision of the mv.
-        Note that this will underestimate battery level.
-
         :returns: Estimate battery level in percent.
         """
         mv = self.voltage_mv()
         level = int((mv - 3500) / (700) * 100)  # 0.7V is 4.2-3.5V
-#        if level >= 100:
-#            self.levels = set([100])
-#        elif level <= 0:
-#            self.levels = set([0])
-        if level not in self.levels:
-            self.levels.add(level)
-            while len(self.levels) > 2:
-                self.levels.remove(max(self.levels))
-        return min(self.levels)
+        level = min(100, max(0, level))
+        return level

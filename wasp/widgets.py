@@ -37,11 +37,12 @@ class BatteryMeter:
         icon = icons.battery
         draw = watch.drawable
         level = watch.battery.level()
+        unit = wasp.system.battery_unit
 
         if level == self.level:
             return
 
-        if wasp.system.battery_percent == "Icon":
+        if unit == "Icon":
             if watch.battery.charging():
                 if self.level != -1:
                     draw.blit(icon, 239-icon[1], 0,
@@ -69,7 +70,7 @@ class BatteryMeter:
                     draw.fill(0, x, 9, w, 18 - h)
                 if h:
                     draw.fill(rgb, x, 27 - h, w, h)
-        elif wasp.system.battery_percent == "Percent":
+        elif unit == "Percent" or unit == "mV":
             draw.set_font(fonts.sans18)
             if watch.battery.charging():
                 col = 0x4CC0 # green
@@ -78,7 +79,11 @@ class BatteryMeter:
             else:
                 col = 0xFFFF
             draw.set_color(col)
-            draw.string(s="  {}%".format(level), x=230, y=0, width=10, right=True)
+            if unit == "mV":
+                disp = "    {}V".format(watch.battery.voltage_mv()/1000)
+            else:
+                disp = "    {}%".format(level)
+            draw.string(disp, x=230, y=0, width=10, right=True)
             draw.reset()
 
         self.level = level
