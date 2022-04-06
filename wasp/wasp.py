@@ -169,8 +169,10 @@ class Manager():
         """Register the default applications."""
         self.register('apps.clock.ClockApp', True, no_except=True)
         #self.register('apps.steps.StepCounterApp', True, no_except=True)
-        #self.register('apps.timer.TimerApp', True, no_except=True)
-        #self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
+
+        self.register('apps.timer.TimerApp', False, no_except=True)
+        self.register('apps.stopwatch.StopwatchApp', False, no_except=True)
+        self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
 
         #self.register('apps.faces.FacesApp', no_except=True)
         self.register('apps.settings.SettingsApp', False, no_except=True)
