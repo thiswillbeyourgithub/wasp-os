@@ -118,12 +118,12 @@ class PomodoroApp():
                 wasp.system.cancel_alarm(self.current_alarm, self._alert)
                 self.current_alarm += 60
                 wasp.system.set_alarm(self.current_alarm, self._alert)
+                self._update()
         else:
             if self.minutes.touch(event) or self.minutes2.touch(event):
                 pass
             elif self.btn_start.touch(event):
                 self._start()
-
 
     def _start(self):
         self.state = _RUNNING
@@ -155,7 +155,7 @@ class PomodoroApp():
         elif self.state == _RUNNING:
             self.btn_stop = widgets.Button(x=0, y=200, w=200, h=40, label="STOP")
             self.btn_stop.draw()
-            self.btn_add = widgets.Button(x=201, y=200, w=39, h=40, label="+1")
+            self.btn_add = widgets.Button(x=200, y=200, w=40, h=40, label="+1")
             self.btn_add.draw()
             draw.reset()
             t = "Timer 1" if self.n_vibr // _REPEAT_BUZZ % 2 == 0 else "Timer 2"
