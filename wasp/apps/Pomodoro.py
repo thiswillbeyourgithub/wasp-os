@@ -92,15 +92,14 @@ class PomodoroApp():
             wasp.watch.vibrator.pulse(duty=50, ms=950)
             wasp.system.keep_awake()
             self.n_vibr += 1
-            if self.n_vibr % _REPEAT_BUZZ == 0:
-                # vibrated _REPEAT_BUZZ times so no more is needed
-                self._stop()
-                if self.n_vibr // _REPEAT_BUZZ < _REPEAT_MAX:
-                    # start another run directly
+            if self.n_vibr % _REPEAT_BUZZ == 0:  # vibrated _REPEAT_BUZZ times
+                # so no more repeat needed
+                if self.n_vibr // _REPEAT_BUZZ < _REPEAT_MAX:  # restart another
                     self._start()
-                    return
-                else:  # stop repeat from going on continuously for days
+                else:  # stop from running for days
+                    self._stop()
                     self.n_vibr = 0
+
         else:
             self._update()
 
