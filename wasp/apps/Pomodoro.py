@@ -112,14 +112,17 @@ class PomodoroApp():
             self._stop()
             mute(False)
         elif self.state == _RUNNING:
-            self._stop()
-        else:  # _STOPPED
+            if self.btn_stop.touch(event):
+                self._stop()
+            elif self.btn_add.touch(event):
+                wasp.system.cancel_alarm(self.current_alarm, self._alert)
+                self.current_alarm += 60
+                wasp.system.set_alarm(self.current_alarm, self._alert)
+        else:
             if self.minutes.touch(event) or self.minutes2.touch(event):
                 pass
-            else:
-                y = event[2]
-                if y >= _BUTTON_Y:
-                    self._start()
+            elif self.btn_start.touch(event):
+                self._start()
 
 
     def _start(self):
@@ -150,7 +153,11 @@ class PomodoroApp():
             draw.string(self.NAME, 0, 150, width=240)
             draw.blit(icon, 73, 50)
         elif self.state == _RUNNING:
-            self._draw_stop(104, _BUTTON_Y)
+            self.btn_stop = widgets.Button(x=0, y=200, w=200, h=40, label="STOP")
+            self.btn_stop.draw()
+            self.btn_add = widgets.Button(x=201, y=200, w=39, h=40, label="+1")
+            self.btn_add.draw()
+            draw.reset()
             t = "Timer 1" if self.n_vibr // _REPEAT_BUZZ % 2 == 0 else "Timer 2"
             n = self.n_vibr // _REPEAT_BUZZ
             t += " (#{})".format(n//2)
@@ -167,7 +174,9 @@ class PomodoroApp():
             self.minutes.draw()
             self.minutes2.draw()
 
-            self._draw_play(114, _BUTTON_Y)
+            self.btn_start = widgets.Button(x=20, y=200, w=200, h=40, label="START")
+            self.btn_start.draw()
+            draw.reset()
 
     def _update(self):
         wasp.system.bar.update()
@@ -186,14 +195,6 @@ class PomodoroApp():
             draw.set_font(fonts.sans28)
             draw.string(m, 50, 106, width=60)
             draw.string(s, 130, 106, width=60)
-
-    def _draw_play(self, x, y):
-        draw = wasp.watch.drawable
-        for i in range(0,20):
-            draw.fill(0xffff, x+i, y+i, 1, 40 - 2*i)
-
-    def _draw_stop(self, x, y):
-        wasp.watch.drawable.fill(0xffff, x, y, 40, 40)
 
     def _alert(self):
         self.state = _RINGING

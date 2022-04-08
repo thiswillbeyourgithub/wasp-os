@@ -49,5 +49,5 @@ wasp.system.blank_after = 300
 #    )
 
 #wasp.system.register('apps.Morse.MorseApp')
-wasp.system.register('apps.Pomodoro.PomodoroApp')
+#wasp.system.register('apps.Pomodoro.PomodoroApp')
 wasp.system.run()
