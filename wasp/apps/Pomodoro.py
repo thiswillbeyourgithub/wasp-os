@@ -89,19 +89,20 @@ class PomodoroApp():
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.state == _RINGING:
-            wasp.watch.vibrator.pulse(duty=50, ms=2000)
+            wasp.watch.vibrator.pulse(duty=50, ms=950)
             wasp.system.keep_awake()
-
             self.n_vibr += 1
             if self.n_vibr % _REPEAT_BUZZ == 0:
-                # vibrated _REPEAT_BUZZ times so repeat was successful
+                # vibrated _REPEAT_BUZZ times so no more is needed
                 self._stop()
                 if self.n_vibr // _REPEAT_BUZZ < _REPEAT_MAX:
                     # start another run directly
                     self._start()
+                    return
                 else:  # stop repeat from going on continuously for days
                     self.n_vibr = 0
-        self._update()
+        else:
+            self._update()
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
@@ -199,3 +200,4 @@ class PomodoroApp():
         self.state = _RINGING
         wasp.system.wake()
         wasp.system.switch(self)
+        self._draw()
