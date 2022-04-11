@@ -37,8 +37,6 @@ class TorchApp(object):
 
     def draw(self):
         """Redraw the display from scratch."""
-        n = (wasp.system.brightness - 1) % 3
-        wasp.system.brightness = n if n else 3
         if self.n_touch % 6 < 3:
             wasp.watch.drawable.fill(0xffff)
         else:
@@ -47,4 +45,6 @@ class TorchApp(object):
 
     def touch(self, event):
         self.n_touch += 1
+        n = (wasp.system.brightness - 1) % 3
+        wasp.system.brightness = n if n else 3
         self.draw()
