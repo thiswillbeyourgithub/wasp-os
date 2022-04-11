@@ -51,7 +51,7 @@ class ClockApp():
         udpate the display (but there is no need for a full redraw because
         the display RAM is preserved during a sleep.
         """
-        self._draw()
+        self._draw(True)
 
     def tick(self, ticks):
         """Periodic callback to update the display."""
