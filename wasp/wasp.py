@@ -524,7 +524,10 @@ class Manager():
             # below
             while True:
                 self._tick()
-                machine.deepsleep()
+                i = 0
+                while i < 100:
+                    i += 1
+                    machine.deepsleep()
 
         while True:
             try:
@@ -547,7 +550,10 @@ class Manager():
             # ticks. In other words this code will break if we improve the
             # power management... we are currently relying on not being able
             # to stay in the low-power state for very long.
-            machine.deepsleep()
+            i = 0
+            while i < 100:
+                i += 1
+                machine.deepsleep()
 
     def _work(self):
         self._scheduled = False
