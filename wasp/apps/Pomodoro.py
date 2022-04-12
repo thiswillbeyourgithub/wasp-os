@@ -45,7 +45,6 @@ _RINGING = const(2)
 _REPEAT_BUZZ = const(2)  # auto stop vibrating after _REPEAT_BUZZ vibrations
 _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 
-_BUTTON_Y = const(200)
 
 class PomodoroApp():
     """Allows the user to set a vibration alarm.
