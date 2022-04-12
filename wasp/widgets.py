@@ -74,11 +74,11 @@ class BatteryMeter:
         elif unit == "Percent" or unit == "mV":
             draw.set_font(fonts.sans18)
             if watch.battery.charging():
-                col = 0x4CC0 # green
+                col = 0x57e0 # green
             elif level <= 30:
-                col =  0xE945 # red
+                col =  0xf800 # red
             else:
-                col = 0xFFFF
+                col = 0xFFFF  # white
             draw.set_color(col)
             if unit == "mV":
                 mv = round(watch.battery.voltage_mv()/1000, 1)
