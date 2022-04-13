@@ -128,7 +128,7 @@ def lightsleep(ms=10):
     display.tick(Pin.pins)
     time.sleep(ms / 1000)
 
-def deepsleep(ms=0):
+def deepsleep(ms=1):
     lightsleep(ms)
 
 def reset():
