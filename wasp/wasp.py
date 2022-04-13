@@ -554,7 +554,7 @@ class Manager():
         try:
             self._tick()
             i = 0
-            while i < 25:
+            while i < 100:
                 i += 1
                 machine.deepsleep()
         except MemoryError as e:
