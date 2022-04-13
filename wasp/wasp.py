@@ -558,6 +558,7 @@ class Manager():
                 i += 1
                 machine.deepsleep()
         except MemoryError as e:
+            gc.collect()
             if self.notify_level >= 2:
                 watch.vibrator.pulse()
             self.switch(PagerApp("Your watch is low on memory.\n\nYou may want to reboot: {}".format(str(e))))
