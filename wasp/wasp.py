@@ -524,10 +524,7 @@ class Manager():
             # below
             while True:
                 self._tick()
-                i = 0
-                while i < 100:
-                    i += 1
-                    machine.deepsleep()
+                machine.deepsleep()
 
         while True:
             try:
@@ -550,15 +547,16 @@ class Manager():
             # ticks. In other words this code will break if we improve the
             # power management... we are currently relying on not being able
             # to stay in the low-power state for very long.
-            i = 0
-            while i < 100:
-                i += 1
-                machine.deepsleep()
+            machine.deepsleep()
 
     def _work(self):
         self._scheduled = False
         try:
             self._tick()
+            i = 0
+            while i < 25:
+                i += 1
+                machine.deepsleep()
         except MemoryError as e:
             if self.notify_level >= 2:
                 watch.vibrator.pulse()
