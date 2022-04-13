@@ -36,7 +36,7 @@ class TouchButton:
         self.tp_rst.on()
         time.sleep_ms(50)
         self.event[0] = 0
-        self._wake_at = rtc.get_uptime_ms() + 300
+        self._wake_at = rtc.get_uptime_ms() + 600
 
     def get_touch_data(self, pin_obj):
         """Synthesize a right swipe during interrupt.
