@@ -553,10 +553,7 @@ class Manager():
         self._scheduled = False
         try:
             self._tick()
-            i = 0
-            while i < 100:
-                i += 1
-                machine.deepsleep()
+            machine.deepsleep()
         except MemoryError as e:
             gc.collect()
             if self.notify_level >= 2:
