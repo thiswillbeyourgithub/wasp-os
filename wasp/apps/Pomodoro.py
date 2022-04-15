@@ -147,7 +147,7 @@ class PomodoroApp():
         elif self.state == _RUNNING:
             self.btn_stop = widgets.Button(x=0, y=200, w=200, h=40, label="STOP")
             self.btn_stop.draw()
-            self.btn_add = widgets.Button(x=200, y=200, w=40, h=40, label="+1")
+            self.btn_add = widgets.Button(x=180, y=200, w=60, h=40, label="+1")
             self.btn_add.draw()
             draw.reset()
             t = "Timer 1" if self.n_vibr // _REPEAT_BUZZ % 2 == 0 else "Timer 2"
