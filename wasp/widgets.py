@@ -81,8 +81,8 @@ class BatteryMeter:
                 col = 0xFFFF  # white
             draw.set_color(col)
             if unit == "mV":
-                mv = round(watch.battery.voltage_mv()/1000, 1)
-                disp = "  {}V".format(mv)
+                mv = round(watch.battery.voltage_mv()/1000, 2)
+                disp = "   {}V".format(mv)
             else:
                 disp = "   {}%".format(level)
             draw.string(disp, x=230, y=0, width=10, right=True)
