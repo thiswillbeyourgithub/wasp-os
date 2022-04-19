@@ -47,8 +47,7 @@ _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 
 
 class PomodoroApp():
-    """Allows the user to set a vibration alarm.
-    """
+    """Allows the user to set a periodic vibration alarm, Pomodoro style."""
     NAME = 'Pomod'
     ICON = icon
 
