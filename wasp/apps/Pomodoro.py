@@ -72,7 +72,7 @@ class PomodoroApp():
     def background(self):
         """De-activate the application."""
         if self.state == _RINGING:
-            self.state = _STOPPED
+            self._start()
 
     def sleep(self):
         """doesn't exit when screen turns off"""
