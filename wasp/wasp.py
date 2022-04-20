@@ -555,6 +555,7 @@ class Manager():
         try:
             self._tick()
             machine.deepsleep()
+            machine.deepsleep()
         except MemoryError as e:
             gc.collect()
             if self.notify_level >= 2:
