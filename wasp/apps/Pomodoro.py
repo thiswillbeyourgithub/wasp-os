@@ -42,8 +42,8 @@ icon = (
 _STOPPED = const(0)
 _RUNNING = const(1)
 _RINGING = const(2)
-_REPEAT_BUZZ = const(2)  # auto stop vibrating after _REPEAT_BUZZ vibrations
-_REPEAT_MAX = const(999)  # auto stop repeat after 999 runs
+_REPEAT_BUZZ = const(3)  # auto stop vibrating after _REPEAT_BUZZ vibrations
+_REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = '0123456789'
 
 
@@ -79,12 +79,12 @@ class PomodoroApp():
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.state == _RINGING:
-            wasp.watch.vibrator.pulse(duty=50, ms=950)
+            wasp.watch.vibrator.pulse(duty=50, ms=850)
             wasp.system.keep_awake()
             self.n_vibr += 1
             if self.n_vibr % _REPEAT_BUZZ == 0:  # vibrated _REPEAT_BUZZ times
                 # so no more repeat needed
-                if self.n_vibr // _REPEAT_BUZZ < _REPEAT_MAX:  # restart another
+                if self.n_vibr // _REPEAT_BUZZ // len(self.squeue) < _REPEAT_MAX:  # restart another
                     self._start()
                 else:  # stop from running for days
                     self._stop()
@@ -137,7 +137,6 @@ class PomodoroApp():
         if self.last_run >= len(self.squeue):
             self.last_run = 0
         m = self.squeue[self.last_run]
-        m = min(99, m)  # otherwise crash because too large to print
 
         # reduce by one second if repeating, to avoid growing offset
         self.current_alarm = now + max(m * 60 - _REPEAT_BUZZ, 1)
@@ -184,7 +183,7 @@ class PomodoroApp():
             for y in range(2):
                 for x in range(5):
                     btn = widgets.Button(x=x*48,
-                                         y=y*49+92,
+                                         y=y*49+103,
                                          w=49,
                                          h=50,
                                          label=_FIELDS[x + 5*y])
@@ -217,18 +216,16 @@ class PomodoroApp():
         draw = wasp.watch.drawable
         if self.state == _RUNNING:
             now = wasp.watch.rtc.time()
-            s = self.current_alarm - now
-            if s<0:
-                s = 0
-            m = str(math.floor(s // 60))
-            s = str(math.floor(s) % 60)
-            if len(m) < 2:
-                m = '0' + m
-            if len(s) < 2:
-                s = '0' + s
+            s = max(self.current_alarm - now, 0)
+            m = math.floor(s // 60)
+            s = math.floor(s) % 60
+            if len(str(m)) > 5:
+                prefix = "+"
+                m = int(str(m)[-4:])
+            else:
+                prefix = ""
             draw.set_font(fonts.sans28)
-            draw.string(m, 50, 106, width=60)
-            draw.string(s, 130, 106, width=60)
+            draw.string("{}{:02d}:{:02d}".format(prefix, m, s), 90, 106, width=60)
 
     def _alert(self):
         self.state = _RINGING
