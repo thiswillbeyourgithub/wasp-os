@@ -56,7 +56,7 @@ class PomodoroApp():
         self.current_alarm = None
         self.n_vibr = 0
 
-        self.queue = "15,2,15,5"
+        self.queue = "15,5"
         self.last_run = -1
         self.state = _STOPPED
 
@@ -86,7 +86,6 @@ class PomodoroApp():
                 if self.n_vibr // _REPEAT_BUZZ < _REPEAT_MAX:  # restart another
                     self._start()
                 else:  # stop from running for days
-                    self.__init__()
                     self._stop()
 
         else:
@@ -150,6 +149,8 @@ class PomodoroApp():
     def _stop(self):
         self.state = _STOPPED
         wasp.system.cancel_alarm(self.current_alarm, self._alert)
+        self.last_run = -1
+        self.n_vibr = 0
         self._draw()
 
     def _draw(self):
