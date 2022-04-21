@@ -128,7 +128,7 @@ class PomodoroApp():
                             break
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans24)
-            draw.string(self.queue, 0, 60, right=True, width=240)
+            draw.string(self.queue, 0, 30, right=True, width=240)
 
     def _start(self):
         self.state = _RUNNING
@@ -183,33 +183,33 @@ class PomodoroApp():
             for y in range(2):
                 for x in range(5):
                     btn = widgets.Button(x=x*48,
-                                         y=y*49+103,
+                                         y=y*65+60,
                                          w=49,
-                                         h=50,
+                                         h=59,
                                          label=_FIELDS[x + 5*y])
                     btn.draw()
                     self.btns.append(btn)
             self.btn_del = widgets.Button(x=0,
-                                          y=200,
-                                          w=80,
-                                          h=40,
+                                          y=190,
+                                          w=76,
+                                          h=50,
                                           label="Del.")
             self.btn_del.draw()
             self.btn_add = widgets.Button(x=80,
-                                          y=200,
-                                          w=80,
-                                          h=40,
+                                          y=190,
+                                          w=76,
+                                          h=50,
                                           label="Then")
             self.btn_add.draw()
             self.btn_start = widgets.Button(x=160,
-                                            y=200,
+                                            y=190,
                                             w=80,
-                                            h=40,
+                                            h=50,
                                             label="Go")
             self.btn_start.draw()
             draw.reset()
             draw.set_font(fonts.sans24)
-            draw.string(self.queue, 0, 60, right=True, width=240)
+            draw.string(self.queue, 0, 30, right=True, width=240)
 
     def _update(self):
         wasp.system.bar.update()
