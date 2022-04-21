@@ -128,7 +128,7 @@ class PomodoroApp():
                             break
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans24)
-            draw.string(self.queue, 0, 30, right=True, width=240)
+            draw.string(self.queue, 0, 35, right=True, width=240)
 
     def _start(self):
         self.state = _RUNNING
@@ -209,7 +209,7 @@ class PomodoroApp():
             self.btn_start.draw()
             draw.reset()
             draw.set_font(fonts.sans24)
-            draw.string(self.queue, 0, 30, right=True, width=240)
+            draw.string(self.queue, 0, 35, right=True, width=240)
 
     def _update(self):
         wasp.system.bar.update()
