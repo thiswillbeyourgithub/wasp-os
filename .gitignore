@@ -14,5 +14,6 @@ wasp/boards/*/watch.py
 wasp/apps/SleepTk.py
 logs
 Morse.txt
-pull_latest_sleep_data.py
+pull_sleep_data.py
+rm_sleep_data.py
 README_sleeptk.md
