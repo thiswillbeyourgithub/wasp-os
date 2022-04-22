@@ -258,7 +258,7 @@ def handle_binary_download(c, tname, fname):
     print(f'Downloading {fname}:')
 
     c.run_command(f'f = open("{tname}", "rb")')
-    sz = eval(stat)
+    sz = max(eval(stat), 1)
     bytes_read = 0
 
     if os.path.exists(fname):
