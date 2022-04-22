@@ -172,17 +172,20 @@ class Manager():
         self.register('apps.flashlight.TorchApp', True, no_except=True)
         self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
 
-        self.register('apps.timer.TimerApp', False, no_except=True)
-        self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
+        try:
+            self.register('apps.timer.TimerApp', False, no_except=True)
+            self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
 
-        #self.register('apps.faces.FacesApp', no_except=True)
-        self.register('apps.settings.SettingsApp', False, no_except=True)
-        self.register('apps.software.SoftwareApp', False, no_except=True)
-        self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
-        self.register('apps.disaBLE.DisaBLEApp', False, no_except=True)
-        #self.register('apps.Morse.MorseApp', False, no_except=True)
-        #self.register('apps.heart.HeartApp', True, no_except=True)
-        #self.register('apps.calc.CalculatorApp', False, no_except=True)
+            #self.register('apps.faces.FacesApp', no_except=True)
+            self.register('apps.settings.SettingsApp', False, no_except=True)
+            self.register('apps.software.SoftwareApp', False, no_except=True)
+            self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
+            self.register('apps.disaBLE.DisaBLEApp', False, no_except=True)
+            #self.register('apps.Morse.MorseApp', False, no_except=True)
+            #self.register('apps.heart.HeartApp', True, no_except=True)
+            #self.register('apps.calc.CalculatorApp', False, no_except=True)
+        except MemoryError:
+            self.switch(PagerApp("Your ran out of memory when loading default apps."))
 
     def register(self, app, quick_ring=False, watch_face=False, no_except=False):
         """Register an application with the system.
@@ -192,6 +195,7 @@ class Manager():
         :param object watch_face: Make the new application the default watch face
         :param object no_except: Ignore exceptions when instantiating applications
         """
+        gc.collect()
         if isinstance(app, str):
             modname = app[:app.rindex('.')]
             exec('import ' + modname)
