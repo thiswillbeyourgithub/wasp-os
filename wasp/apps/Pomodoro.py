@@ -131,6 +131,14 @@ class PomodoroApp():
             draw.string(self.queue, 0, 35, right=True, width=240)
 
     def _start(self):
+        if self.btns is not None:  # save some memory
+            for b in self.btns:
+                b = None
+                del b
+            self.btns = None
+            del self.btns
+        wasp.gc.collect()
+
         self.state = _RUNNING
         now = wasp.watch.rtc.time()
         self.last_run += 1
