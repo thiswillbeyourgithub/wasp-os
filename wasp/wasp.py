@@ -532,10 +532,10 @@ class Manager():
                 self._tick()
             except KeyboardInterrupt:
                 raise
-            except MemoryError as e:
+            except MemoryError:
                 if self.notify_level >= 2:
                     watch.vibrator.pulse()
-                self.switch(PagerApp("Your watch is low on memory.\n\nYou may want to reboot: {}".format(str(e))))
+                self.switch(PagerApp("Your watch is low on memory.\n\nYou may want to reboot."))
             except Exception as e:
                 # Only print the exception if the watch provides a way to do so!
                 if self.notify_level >= 2:
@@ -554,12 +554,10 @@ class Manager():
         self._scheduled = False
         try:
             self._tick()
-            machine.deepsleep()
-        except MemoryError as e:
-            gc.collect()
+        except MemoryError:
             if self.notify_level >= 2:
                 watch.vibrator.pulse()
-            self.switch(PagerApp("Your watch is low on memory.\n\nYou may want to reboot: {}".format(str(e))))
+            self.switch(PagerApp("Your watch is low on memory.\n\nYou may want to reboot."))
         except Exception as e:
             # Only print the exception if the watch provides a way to do so!
             if self.notify_level >= 2:
