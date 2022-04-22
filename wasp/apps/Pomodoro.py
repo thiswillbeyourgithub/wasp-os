@@ -136,7 +136,6 @@ class PomodoroApp():
                 b = None
                 del b
             self.btns = None
-            del self.btns
         wasp.gc.collect()
 
         self.state = _RUNNING
