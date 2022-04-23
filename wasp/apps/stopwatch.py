@@ -58,14 +58,11 @@ class StopwatchApp():
             del self._splits[4:]
             self._nsplits += 1
             wasp.watch.vibrator.pulse(duty=50, ms=50)
-        elif self._nsplits == 0:
-            self._timer.start()
-            wasp.watch.vibrator.pulse(duty=50, ms=250)
         else:
             self._reset()
             wasp.watch.vibrator.pulse(duty=50, ms=50)
-        self._update()
         self._draw_splits()
+        self._update()
 
     def touch(self, event):
         if self._timer.started:
