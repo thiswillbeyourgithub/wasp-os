@@ -213,7 +213,7 @@ class PomodoroApp():
                                             w=80,
                                             h=50,
                                             label="Go")
-            self.btn_start.draw()
+            self.btn_start.update(txt=0, frame=wasp.system.theme('mid'), bg=0xf800)
             draw.reset()
             draw.set_font(fonts.sans24)
             draw.string(self.queue, 0, 35, right=True, width=240)
