@@ -44,7 +44,7 @@ _RUNNING = const(1)
 _RINGING = const(2)
 _REPEAT_BUZZ = const(3)  # auto stop vibrating after _REPEAT_BUZZ vibrations
 _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
-_FIELDS = '0123456789'
+_FIELDS = '1234567890'
 
 
 class PomodoroApp():
@@ -124,7 +124,7 @@ class PomodoroApp():
                 else:
                     for i, b in enumerate(self.btns):
                         if b.touch(event):
-                            self.queue += str(i)
+                            self.queue += str((i+1)%10)
                             break
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans24)
