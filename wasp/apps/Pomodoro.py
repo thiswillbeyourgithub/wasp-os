@@ -57,7 +57,7 @@ class PomodoroApp():
         self.current_alarm = None
         self.n_vibr = 0
 
-        self.queue = "15,5"
+        self.queue = "25,5,25,5,25,30"
         self.last_run = -1
         self.state = _STOPPED
 
