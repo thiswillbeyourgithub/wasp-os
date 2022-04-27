@@ -19,7 +19,7 @@ def draw_pbar(percent, quiet=False, end='\r'):
         if percent > 100:
             percent = 100
         bar = int(percent) // 2
-        print(f'[{"#"*bar}{"."*(50-bar)}] {round(percent, 1)}%     ', end=end, flush=True)
+        print(f'[{"#"*bar}{"."*(50-bar)}] {round(percent, 1)}%', end=end, flush=True)
 
 def pbar(iterable, quiet=False):
     step = 100 / len(iterable)
@@ -281,7 +281,6 @@ def handle_binary_download(c, tname, fname):
 
     with open(fname, 'wb') as f:
         while True:
-            draw_pbar(100 * bytes_read / sz, verbose)
             reply = c.run_command('repr(f.read(24))')
             reply = reply.replace('\\\\', '\\')
             if reply.startswith('"'):
@@ -295,6 +294,7 @@ def handle_binary_download(c, tname, fname):
                 break
             bytes_read += len(data)
             f.write(data)
+            draw_pbar(100 * bytes_read / sz, verbose)
 
     draw_pbar(100, verbose, end=None)
     c.run_command('f.close()')
