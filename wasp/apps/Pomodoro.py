@@ -68,7 +68,7 @@ class PomodoroApp():
     def foreground(self):
         """Activate the application."""
         self._draw()
-        wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_UPDOWN)
+        wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_LEFTRIGHT)
         wasp.system.request_tick(1000)
 
     def background(self):
@@ -99,9 +99,9 @@ class PomodoroApp():
     def swipe(self, event):
         "used to load presets"
         if self.state == _STOPPED:
-            if event[0] == wasp.EventType.UP:
+            if event[0] == wasp.EventType.RIGHT:
                 self.last_preset += 1
-            elif event[0] == wasp.EventType.DOWN:
+            elif event[0] == wasp.EventType.LEFT:
                 self.last_preset -= 1
             self.last_preset %= len([x for x in globals() if str(x).startswith("_PRESET")])
             self.queue = eval("_PRESET{}".format(self.last_preset))
