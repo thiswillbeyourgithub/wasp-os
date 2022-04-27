@@ -3,7 +3,7 @@
 """Pomodoro Application
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-A pomodoro app, forked from timer.py.
+A pomodoro app, forked from timer.py. Swipe to load presets.
 
     .. figure:: res/PomodApp.png
         :width: 179
@@ -46,6 +46,9 @@ _REPEAT_BUZZ = const(3)  # auto stop vibrating after _REPEAT_BUZZ vibrations
 _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = '1234567890'
 
+_PRESET0 = '15,3,15,3,10,10'
+_PRESET1 = '10'
+_PRESET2 = '25,5'
 
 class PomodoroApp():
     """Allows the user to set a periodic vibration alarm, Pomodoro style."""
@@ -57,14 +60,15 @@ class PomodoroApp():
         self.current_alarm = None
         self.n_vibr = 0
 
-        self.queue = "25,5,25,5,25,30"
+        self.last_preset = 0
+        self.queue = _PRESET0
         self.last_run = -1
         self.state = _STOPPED
 
     def foreground(self):
         """Activate the application."""
         self._draw()
-        wasp.system.request_event(wasp.EventMask.TOUCH)
+        wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_UPDOWN)
         wasp.system.request_tick(1000)
 
     def background(self):
@@ -91,6 +95,20 @@ class PomodoroApp():
 
         else:
             self._update()
+
+    def swipe(self, event):
+        "used to load presets"
+        if self.state == _STOPPED:
+            if event[0] == wasp.EventType.UP:
+                self.last_preset += 1
+            elif event[0] == wasp.EventType.DOWN:
+                self.last_preset -= 1
+            self.last_preset %= len([x for x in globals() if str(x).startswith("_PRESET")])
+            self.queue = eval("_PRESET{}".format(self.last_preset))
+            draw = wasp.watch.drawable
+            draw.set_font(fonts.sans24)
+            draw.string(self.queue, 0, 35, right=True, width=240)
+
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
