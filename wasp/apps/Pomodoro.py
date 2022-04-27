@@ -46,9 +46,8 @@ _REPEAT_BUZZ = const(3)  # auto stop vibrating after _REPEAT_BUZZ vibrations
 _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = '1234567890'
 
-_PRESET0 = '15,3,15,3,10,10'
-_PRESET1 = '10'
-_PRESET2 = '25,5'
+# you can add your own presets here:
+_PRESETS = ['15,3,15,3,10,10', '10', '25,5']
 
 class PomodoroApp():
     """Allows the user to set a periodic vibration alarm, Pomodoro style."""
@@ -61,7 +60,7 @@ class PomodoroApp():
         self.n_vibr = 0
 
         self.last_preset = 0
-        self.queue = _PRESET0
+        self.queue = _PRESETS[0]
         self.last_run = -1
         self.state = _STOPPED
 
@@ -103,12 +102,9 @@ class PomodoroApp():
                 self.last_preset += 1
             elif event[0] == wasp.EventType.LEFT:
                 self.last_preset -= 1
-            self.last_preset %= len([x for x in globals() if str(x).startswith("_PRESET")])
-            self.queue = eval("_PRESET{}".format(self.last_preset))
-            draw = wasp.watch.drawable
-            draw.set_font(fonts.sans24)
-            draw.string(self.queue, 0, 35, right=True, width=240)
-
+            self.last_preset %= len(_PRESETS)
+            self.queue = _PRESETS[self.last_preset]
+            self._draw()
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
