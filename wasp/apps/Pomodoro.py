@@ -129,7 +129,7 @@ class PomodoroApp():
             elif self.btn_start.touch(event):
                 if self.queue != "" and not self.queue.endswith(","):
                     self.squeue = [int(x) for x in self.queue.split(",")]
-                    self._start()
+                    self._start(first_run=True)
                     return
             elif len(self.queue) < 14:
                 if self.btn_add.touch(event):
@@ -144,7 +144,7 @@ class PomodoroApp():
             draw.set_font(fonts.sans24)
             draw.string(self.queue, 0, 35, right=True, width=240)
 
-    def _start(self):
+    def _start(self, first_run=False):
         if self.btns is not None:  # save some memory
             for b in self.btns:
                 b = None
@@ -160,7 +160,10 @@ class PomodoroApp():
         m = self.squeue[self.last_run]
 
         # reduce by one second if repeating, to avoid growing offset
-        self.current_alarm = now + max(m * 60 - _REPEAT_BUZZ, 1)
+        if first_run:
+            self.current_alarm = now + max(m * 60, 1)
+        else:
+            self.current_alarm = now + max(m * 60 - _REPEAT_BUZZ, 1)
         wasp.system.set_alarm(self.current_alarm, self._alert)
         self._draw()
 
