@@ -1,1 +1,1 @@
-This fork was created to develop the [sleep tracker app](https://github.com/thiswillbeyourgithub/sleep_tracker_pinetime_wasp-os)
+This fork is private and used to share my version of waspos to my friends.
