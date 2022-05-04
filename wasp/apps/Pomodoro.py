@@ -119,6 +119,7 @@ class PomodoroApp():
                 wasp.system.cancel_alarm(self.current_alarm, self._alert)
                 self.current_alarm += 60
                 wasp.system.set_alarm(self.current_alarm, self._alert)
+                wasp.watch.vibrator.pulse(duty=25, ms=150)
                 self._update()
         else:
             if self.btn_del.touch(event):
