@@ -47,7 +47,7 @@ _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = '1234567890'
 
 # you can add your own presets here:
-_PRESETS = ['15,3,15,3,10,10', '10', '25,5']
+_PRESETS = ['10,3', '15,3,15,3,10,10', '25,5']
 
 class PomodoroApp():
     """Allows the user to set a periodic vibration alarm, Pomodoro style."""
