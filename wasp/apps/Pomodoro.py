@@ -103,6 +103,8 @@ class PomodoroApp():
         if event[0] == wasp.EventType.UP:
             wasp.system.navigate(wasp.EventType.HOME)
         if self.state == _STOPPED:
+            draw = wasp.watch.drawable
+            draw.set_font(fonts.sans24)
             if event[0] == wasp.EventType.DOWN:
                 self.repeat_buzz = max(1, (self.repeat_buzz+1)%10)
             else:
@@ -112,7 +114,8 @@ class PomodoroApp():
                     self.last_preset -= 1
                 self.last_preset %= len(_PRESETS)
                 self.queue = _PRESETS[self.last_preset]
-            self._draw()
+            draw.string(self.queue, 0, 35, right=True, width=240)
+            draw.string("V{}".format(self.repeat_buzz), 0, 35)
 
     def touch(self, event):
         """Notify the application of a touchscreen touch event."""
