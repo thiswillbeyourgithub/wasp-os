@@ -85,7 +85,7 @@ class PomodoroApp():
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.state == _RINGING:
-            wasp.watch.vibrator.pulse(duty=50, ms=850)
+            wasp.watch.vibrator.pulse(duty=50, ms=750)
             wasp.system.keep_awake()
             self.n_vibr += 1
             if self.n_vibr % self.repeat_buzz == 0:  # vibrated self.repeat_buzz times
