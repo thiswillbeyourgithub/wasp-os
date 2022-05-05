@@ -3,7 +3,8 @@
 """Pomodoro Application
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-A pomodoro app, forked from timer.py. Swipe to load presets.
+A pomodoro app, forked from timer.py. Swipe laterally to load presets and down
+to change number of vibration.
 
     .. figure:: res/PomodApp.png
         :width: 179
@@ -42,7 +43,6 @@ icon = (
 _STOPPED = const(0)
 _RUNNING = const(1)
 _RINGING = const(2)
-_REPEAT_BUZZ = const(3)  # auto stop vibrating after _REPEAT_BUZZ vibrations
 _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = '1234567890'
 
@@ -57,7 +57,8 @@ class PomodoroApp():
     def __init__(self):
         """Initialize the application."""
         self.current_alarm = None
-        self.n_vibr = 0
+        self.n_vibr = 0  # number of time it vibrated
+        self.repeat_buzz = 3  # number of times to vibrate each time
 
         self.last_preset = 0
         self.queue = _PRESETS[0]
@@ -67,7 +68,9 @@ class PomodoroApp():
     def foreground(self):
         """Activate the application."""
         self._draw()
-        wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_LEFTRIGHT)
+        wasp.system.request_event(wasp.EventMask.TOUCH |
+                wasp.EventMask.SWIPE_LEFTRIGHT |
+                wasp.EventMask.SWIPE_UPDOWN)
         wasp.system.request_tick(1000)
 
     def background(self):
@@ -85,9 +88,9 @@ class PomodoroApp():
             wasp.watch.vibrator.pulse(duty=50, ms=850)
             wasp.system.keep_awake()
             self.n_vibr += 1
-            if self.n_vibr % _REPEAT_BUZZ == 0:  # vibrated _REPEAT_BUZZ times
+            if self.n_vibr % self.repeat_buzz == 0:  # vibrated self.repeat_buzz times
                 # so no more repeat needed
-                if self.n_vibr // _REPEAT_BUZZ // len(self.squeue) < _REPEAT_MAX:  # restart another
+                if self.n_vibr // self.repeat_buzz // len(self.squeue) < _REPEAT_MAX:  # restart another
                     self._start()
                 else:  # stop from running for days
                     self._stop()
@@ -97,13 +100,18 @@ class PomodoroApp():
 
     def swipe(self, event):
         "used to load presets"
+        if event[0] == wasp.EventType.UP:
+            wasp.system.navigate(wasp.EventType.HOME)
         if self.state == _STOPPED:
-            if event[0] == wasp.EventType.RIGHT:
-                self.last_preset += 1
-            elif event[0] == wasp.EventType.LEFT:
-                self.last_preset -= 1
-            self.last_preset %= len(_PRESETS)
-            self.queue = _PRESETS[self.last_preset]
+            if event[0] == wasp.EventType.DOWN:
+                self.repeat_buzz = max(1, (self.repeat_buzz+1)%10)
+            else:
+                if event[0] == wasp.EventType.RIGHT:
+                    self.last_preset += 1
+                elif event[0] == wasp.EventType.LEFT:
+                    self.last_preset -= 1
+                self.last_preset %= len(_PRESETS)
+                self.queue = _PRESETS[self.last_preset]
             self._draw()
 
     def touch(self, event):
@@ -121,7 +129,7 @@ class PomodoroApp():
                 wasp.system.set_alarm(self.current_alarm, self._alert)
                 wasp.watch.vibrator.pulse(duty=25, ms=150)
                 self._update()
-        else:
+        elif self.state == _STOPPED:
             if self.btn_del.touch(event):
                 if len(self.queue) > 1:
                     self.queue = self.queue[:-1]
@@ -132,7 +140,7 @@ class PomodoroApp():
                     self.squeue = [int(x) for x in self.queue.split(",")]
                     self._start(first_run=True)
                     return
-            elif len(self.queue) < 14:
+            elif len(self.queue) < 13:
                 if self.btn_add.touch(event):
                     if len(self.queue) >= 1 and self.queue[-1] != ",":
                         self.queue += ","
@@ -144,6 +152,7 @@ class PomodoroApp():
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans24)
             draw.string(self.queue, 0, 35, right=True, width=240)
+            draw.string("V{}".format(self.repeat_buzz), 0, 35)
 
     def _start(self, first_run=False):
         if self.btns is not None:  # save some memory
@@ -164,7 +173,7 @@ class PomodoroApp():
         if first_run:
             self.current_alarm = now + max(m * 60, 1)
         else:
-            self.current_alarm = now + max(m * 60 - _REPEAT_BUZZ, 1)
+            self.current_alarm = now + max(m * 60 - self.repeat_buzz, 1)
         wasp.system.set_alarm(self.current_alarm, self._alert)
         self._draw()
 
@@ -195,15 +204,14 @@ class PomodoroApp():
             draw.reset()
             t = "Timer #{}/{}  ({})".format(self.last_run+1,
                     len(self.squeue),
-                    self.n_vibr // _REPEAT_BUZZ // len(self.squeue))
+                    self.n_vibr // self.repeat_buzz // len(self.squeue))
             draw.string(t, 10, 60)
             draw.set_font(fonts.sans28)
             draw.string(':', 110, 106, width=20)
 
             self._update()
             draw.set_font(fonts.sans18)
-        else:  # _STOPPED
-
+        elif self.state == _STOPPED:
             self.btns = []
             for y in range(2):
                 for x in range(5):
@@ -235,6 +243,7 @@ class PomodoroApp():
             draw.reset()
             draw.set_font(fonts.sans24)
             draw.string(self.queue, 0, 35, right=True, width=240)
+            draw.string("V{}".format(self.repeat_buzz), 0, 35)
 
     def _update(self):
         wasp.system.bar.update()
