@@ -87,8 +87,15 @@ class PomodoroApp():
             if self.nb_vibrat_per_alarm <= 3:
                 wasp.watch.vibrator.pulse(duty=50, ms=650)
             else:
-                wasp.watch.vibrator.pulse(duty=random.randint(20, 50),
-                                          ms=random.randint(200, 750))
+                if random.random() > 0.5:
+                    wasp.watch.vibrator.pulse(duty=random.randint(20, 50),
+                                              ms=random.randint(200, 750))
+                else:
+                    wasp.watch.vibrator.pulse(duty=20,
+                                              ms=random.randint(100, 300))
+                    wasp.watch.time.sleep(0.05)
+                    wasp.watch.vibrator.pulse(duty=20,
+                                              ms=random.randint(100, 300))
             wasp.system.keep_awake()
             self.nb_vibrat_total += 1
             if self.nb_vibrat_total % self.nb_vibrat_per_alarm == 0:
