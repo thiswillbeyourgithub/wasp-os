@@ -85,13 +85,15 @@ class PomodoroApp():
 
     def tick(self, ticks):
         if self.state == _RINGING:
-            if self.nb_vibrat_per_alarm <= 2:
+            if self.nb_vibrat_per_alarm <= 3:
                 wasp.watch.vibrator.pulse(duty=50, ms=650)
             else:
                 wasp.watch.time.sleep(random.randint(0, 150) * 0.001)  # offset pattern
-                if random.random() > 0.5:  # one long vibration
+                if random.random() > 0.8:  # one very long vibration
+                    wasp.watch.vibrator.pulse(duty=random.randint(20, 60), ms=1000)
+                elif random.random() > 0.66:  # one long vibration
                     wasp.watch.vibrator.pulse(duty=random.randint(20, 60),
-                                              ms=random.randint(750, 950))
+                                              ms=random.randint(750, 850))
                 else:  # burst of vibration
                     wasp.watch.vibrator.pulse(duty=20, ms=random.randint(100, 200))
                     wasp.watch.time.sleep(random.randint(50, 150) * 0.001)
