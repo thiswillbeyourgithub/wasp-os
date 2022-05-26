@@ -49,7 +49,7 @@ _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = const(1234567890)
 
 # you can add your own presets here:
-_PRESETS = ['10,3', '15,3,15,3,10,10', '25,5']
+_PRESETS = ['15,4', '10,3', '20,5']
 
 
 class PomodoroApp():
