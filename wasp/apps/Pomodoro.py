@@ -61,7 +61,7 @@ class PomodoroApp():
     def __init__(self):
         self.current_alarm = None
         self.nb_vibrat_total = 0  # number of time it vibrated
-        self.nb_vibrat_per_alarm = 3  # number of times to vibrate each time
+        self.nb_vibrat_per_alarm = 10  # number of times to vibrate each time
 
         self.last_preset = 0
         self.queue = _PRESETS[0]
