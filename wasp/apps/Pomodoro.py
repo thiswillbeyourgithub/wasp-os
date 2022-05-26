@@ -3,7 +3,7 @@
 """Pomodoro Application
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-A pomodoro app, forked from timer.py. Swipe laterally to load presets and down
+A pomodoro app, forked from timer.py. Swipe laterally to load presets and vertically
 to change number of vibration. Vibration pattern are randomized if vibrating
 more than 4 times.
 
@@ -47,6 +47,7 @@ _RUNNING = const(1)
 _RINGING = const(2)
 _REPEAT_MAX = const(99)  # auto stop repeat after 99 runs
 _FIELDS = const(1234567890)
+_MAX_VIB = const(15)  # max number of second the watch you vibrate
 
 # you can add your own presets here:
 _PRESETS = ['15,4', '10,3', '20,5']
@@ -112,13 +113,15 @@ class PomodoroApp():
             self._update()
 
     def swipe(self, event):
-        if event[0] == wasp.EventType.UP:
-            wasp.system.navigate(wasp.EventType.HOME)
         if self.state == _STOPPED:
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans24)
-            if event[0] == wasp.EventType.DOWN:
-                self.nb_vibrat_per_alarm = max(1, (self.nb_vibrat_per_alarm + 1) % 10)
+            if event[0] == wasp.EventType.UP:
+                self.nb_vibrat_per_alarm = max(1, (self.nb_vibrat_per_alarm + 1) % _MAX_VIB)
+            elif event[0] == wasp.EventType.DOWN:
+                self.nb_vibrat_per_alarm -= 1
+                if self.nb_vibrat_per_alarm == 0:
+                    self.nb_vibrat_per_alarm = _MAX_VIB
             else:
                 if event[0] == wasp.EventType.RIGHT:
                     self.last_preset += 1
