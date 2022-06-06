@@ -27,7 +27,7 @@ class TorchApp(object):
         self._brightness = wasp.system.brightness
         wasp.system.brightness = 3
         self._ntouch = 1
-        wasp.watch.drawable.fill(0xffff)  # white
+        wasp.watch.drawable.fill(0xf800)  # red
 
     def background(self):
         """De-activate the application (without losing original state)."""
@@ -42,6 +42,6 @@ class TorchApp(object):
         wasp.system.brightness = (-self._ntouch) % 3 + 1
         if (-self._ntouch + 1) % 3 == 0:
             if -self._ntouch % 6 < 3:
-                wasp.watch.drawable.fill(0xf800)  # red
-            else:
                 wasp.watch.drawable.fill(0xffff)  # white
+            else:
+                wasp.watch.drawable.fill(0xf800)  # red
