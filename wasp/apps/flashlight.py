@@ -21,6 +21,7 @@ class TorchApp(object):
 
     def foreground(self):
         """Activate the application."""
+        self._elapsed = 0
         wasp.system.request_tick(3000)
         wasp.system.request_event(wasp.EventMask.TOUCH)
 
@@ -35,6 +36,9 @@ class TorchApp(object):
 
     def tick(self, ticks):
         wasp.system.keep_awake()
+        self._elapsed += 3
+        if self._elapsed >= 60:
+            wasp.system.sleep()
 
     def touch(self, event):
         self._ntouch += 1
