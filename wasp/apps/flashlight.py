@@ -37,7 +37,7 @@ class TorchApp(object):
     def tick(self, ticks):
         wasp.system.keep_awake()
         self._elapsed += 3
-        if self._elapsed >= 60:
+        if self._elapsed >= 180:
             wasp.system.sleep()
 
     def touch(self, event):
