@@ -87,12 +87,12 @@ class AlarmApp:
         self.pending_alarms = array.array('d', [0.0, 0.0, 0.0, 0.0])
 
         # Set a nice default
-        self.num_alarms = 1
-        for alarm in self.alarms:
-            alarm[_HOUR_IDX] = 8
-            alarm[_MIN_IDX] = 0
-            alarm[_ENABLED_IDX] = 0
-        self.alarms[0][_ENABLED_IDX] = _WEEKDAYS
+        self.num_alarms = 0
+#        for alarm in self.alarms:
+#            alarm[_HOUR_IDX] = 8
+#            alarm[_MIN_IDX] = 0
+#            alarm[_ENABLED_IDX] = 0
+#        self.alarms[0][_ENABLED_IDX] = _WEEKDAYS
 
 
     def foreground(self):
