@@ -173,8 +173,9 @@ class Manager():
         self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
 
         try:
-            self.register('apps.timer.TimerApp', False, no_except=True)
+            #self.register('apps.timer.TimerApp', False, no_except=True)
             self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
+            self.register('apps.alarm.AlarmApp', False, no_except=True)
 
             #self.register('apps.faces.FacesApp', no_except=True)
             self.register('apps.settings.SettingsApp', False, no_except=True)
@@ -183,7 +184,7 @@ class Manager():
             self.register('apps.disaBLE.DisaBLEApp', False, no_except=True)
             #self.register('apps.Morse.MorseApp', False, no_except=True)
             #self.register('apps.heart.HeartApp', True, no_except=True)
-            #self.register('apps.calc.CalculatorApp', False, no_except=True)
+            self.register('apps.calc.CalculatorApp', False, no_except=True)
         except MemoryError:
             self.switch(PagerApp("Your ran out of memory when loading default apps."))
 
