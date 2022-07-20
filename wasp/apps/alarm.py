@@ -251,10 +251,10 @@ class AlarmApp:
         draw.string("Touch to snooze", 0, 180, width=240)
         draw.blit(icon, 73, 50)
         draw.line(35, 1, 35, 239)
-        draw.string('S', 10, 65)
-        draw.string('t', 10, 95)
-        draw.string('o', 10, 125)
-        draw.string('p', 10, 155)
+        draw.string('P', 10, 65)
+        draw.string('U', 10, 95)
+        draw.string('S', 10, 125)
+        draw.string('H', 10, 155)
 
     def _draw_edit_page(self):
         draw = wasp.watch.drawable
