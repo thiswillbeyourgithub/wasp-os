@@ -90,7 +90,7 @@ class AlarmApp:
         self.num_alarms = 0
         try:
             with open("alarms.txt", "r") as f:
-                alarms = "".join(f.readlines()).split(";")
+                alarms = f.readlines()[0].split(";")
             for alarm in alarms:
                 n = self.num_alarms
                 self.alarms[n][:] = map(int, alarm.split(","))
