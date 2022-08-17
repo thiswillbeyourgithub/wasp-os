@@ -49,7 +49,7 @@ class Accelerometer:
     def steps(self, value):
         self.reset()
 
-    def read_xyz(self):
+    def accel_xyz(self):
         return (int(random.randint(-1000, 1000)),
                 int(random.randint(-1000, 1000)),
                 int(random.randint(-1000, 1000)))
