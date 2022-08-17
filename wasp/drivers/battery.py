@@ -63,9 +63,9 @@ class Battery(object):
 
         if mv not in self._cache:
             self._cache.add(mv)
-            while len(self._cache) > 2:
-                self._cache.remove(max(self._cache))
-        return min(self._cache)
+            while len(self._cache) > 3:
+                self._cache.pop()
+        return sum(self._cache) / len(self._cache)
 
     def level(self):
         """Estimate the battery level.
