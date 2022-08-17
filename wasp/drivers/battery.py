@@ -5,7 +5,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 import micropython
-from machine import Pin, ADC
+from machine import ADC
+
 
 class Battery(object):
     """Generic lithium ion battery driver.
