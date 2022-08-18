@@ -170,17 +170,17 @@ class Manager():
         self.register('apps.clock.ClockApp', True, no_except=True)
         #self.register('apps.steps.StepCounterApp', True, no_except=True)
         self.register('apps.flashlight.TorchApp', True, no_except=True)
+        self.register('apps.timer.TimerApp', True, no_except=True)
         self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
 
         try:
-            #self.register('apps.timer.TimerApp', False, no_except=True)
+            self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
             self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
             self.register('apps.alarm.AlarmApp', False, no_except=True)
 
             #self.register('apps.faces.FacesApp', no_except=True)
             self.register('apps.settings.SettingsApp', False, no_except=True)
             self.register('apps.software.SoftwareApp', False, no_except=True)
-            self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
             self.register('apps.disaBLE.DisaBLEApp', False, no_except=True)
             #self.register('apps.Morse.MorseApp', False, no_except=True)
             #self.register('apps.heart.HeartApp', True, no_except=True)
@@ -224,7 +224,7 @@ class Manager():
             self.quick_ring.append(app)
         else:
             self.launcher_ring.append(app)
-            self.launcher_ring.sort(key = _key_app)
+            #self.launcher_ring.sort(key = _key_app)
 
     def unregister(self, cls):
         for app in self.launcher_ring:
