@@ -2,5 +2,5 @@
 # Copyright (C) 2020 Daniel Thompson
 
 import wasp
-from gadgetbridge import *
+# from gadgetbridge import *
 wasp.system.schedule()
