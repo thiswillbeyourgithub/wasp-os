@@ -17,14 +17,12 @@
 import gc
 import machine
 import micropython
-import steplogger
 import sys
 import watch
 import widgets
 
 from apps.launcher import LauncherApp
 from apps.pager import PagerApp, CrashApp, NotificationApp
-from apps.steps import StepCounterApp
 
 class EventType():
     """Enumerated interface actions.
@@ -215,8 +213,14 @@ class Manager():
         # "Special case" for watches that have working step counters!
         # More usefully it allows other apps to detect the presence/absence
         # of a working step counter by looking at wasp.system.steps .
-        if isinstance(app, StepCounterApp):
-            self.steps = steplogger.StepLogger(self)
+        try:
+            from apps.steps import StepCounterApp
+            if isinstance(app, StepCounterApp):
+                import steplogger
+                self.steps = steplogger.StepLogger(self)
+        except ImportError:
+            self.switch(PagerApp("Could not import Step logger, maybe you "
+                                 "disabled it?"))
 
         if watch_face:
             self.quick_ring[0] = app
