@@ -64,7 +64,7 @@ class Battery(object):
 
         if mv not in self._cache:
             self._cache.add(mv)
-            while len(self._cache) > 3:
+            while len(self._cache) > 2:
                 self._cache.pop()
         return sum(self._cache) / len(self._cache)
 
