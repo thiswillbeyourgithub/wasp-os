@@ -90,18 +90,23 @@ class PomodoroApp():
             if self.nb_vibrat_per_alarm <= 3:
                 wasp.watch.vibrator.pulse(duty=50, ms=650)
             else:
-                wasp.watch.time.sleep(random.randint(0, 150) * 0.001)  # offset pattern
                 if random.random() > 0.8:  # one very long vibration
-                    wasp.watch.vibrator.pulse(duty=random.randint(20, 60), ms=1000)
-                elif random.random() > 0.66:  # one long vibration
                     wasp.watch.vibrator.pulse(duty=random.randint(20, 60),
-                                              ms=random.randint(750, 850))
+                                              ms=900)
                 else:  # burst of vibration
-                    wasp.watch.vibrator.pulse(duty=20, ms=random.randint(100, 200))
-                    wasp.watch.time.sleep(random.randint(50, 150) * 0.001)
-                    wasp.watch.vibrator.pulse(duty=20, ms=random.randint(100, 200))
-                    wasp.watch.time.sleep(random.randint(50, 150) * 0.001)
-                    wasp.watch.vibrator.pulse(duty=20, ms=random.randint(100, 200))
+                    max_dur = 950
+                    done_vibr = 0
+                    while done_vibr < max_dur:
+                        new_vibr = random.randint(100, 200)
+                        new_sleep = random.randint(50, 150)
+                        done_vibr += new_vibr + new_sleep
+                        if done_vibr >= max_dur:
+                            break
+                        wasp.watch.vibrator.pulse(duty=3, ms=new_vibr)
+                        wasp.watch.time.sleep(new_sleep * 0.001)
+                    if done_vibr < max_dur:
+                        wasp.watch.vibrator.pulse(duty=3,
+                                                  ms=max_dur - done_vibr)
             wasp.system.keep_awake()
             self.nb_vibrat_total += 1
             if self.nb_vibrat_total % self.nb_vibrat_per_alarm == 0:
