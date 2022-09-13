@@ -42,5 +42,5 @@ manifest = (
     #'steplogger.py',
     'widgets.py',
     'apps/SleepTk.py',
-    'apps/Morse.py',
+    #'apps/Morse.py',
 )
