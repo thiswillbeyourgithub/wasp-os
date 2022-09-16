@@ -216,14 +216,14 @@ def handle_reset(c, ota=False):
     c.expect('=== ')
     c.send('\x04')
 
-def handle_rtc(c):
+def handle_rtc(c, offset=0):
     # Wait for the clock to tick over to the next second
     now = then = time.localtime()
     while now[5] == then[5]:
         now = time.localtime()
 
     # Set the time
-    c.sendline(f'watch.rtc.set_localtime(({now[0]}, {now[1]}, {now[2]}, {now[3]}, {now[4]}, {now[5]}, {now[6]}, {now[7]}))')
+    c.sendline(f'watch.rtc.set_localtime(({now[0]}, {now[1]}, {now[2]}, {now[3]}, {now[4] + offset}, {now[5]}, {now[6]}, {now[7]}))')
     c.expect('>>> ')
 
 def check_rtc(c):
@@ -395,6 +395,8 @@ if __name__ == '__main__':
             help="Deliver an OTA update to the device")
     parser.add_argument('--rtc', action='store_true',
             help='Set the time on the wasp-os device')
+    parser.add_argument('--rtc_with_offset', action='store_true',
+            help='Set the time on the wasp-os device + 3 minutes')
     parser.add_argument('--upload',
             help='Copy the specified file to the wasp-os device')
     parser.add_argument('--verbose', action='store_true',
@@ -441,6 +443,9 @@ if __name__ == '__main__':
 
     if args.check_rtc:
         check_rtc(console)
+
+    if args.rtc_with_offset:
+        handle_rtc(console, offset=3)
 
     if args.exec:
         handle_exec(console, args.exec)
