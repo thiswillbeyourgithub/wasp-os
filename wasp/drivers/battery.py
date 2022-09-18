@@ -5,7 +5,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 import micropython
-from machine import ADC
+from machine import ADC, Pin
 
 
 class Battery(object):
