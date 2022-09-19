@@ -59,6 +59,9 @@ class PomodoroApp():
     ICON = icon
 
     def __init__(self):
+        self._already_initialized = False
+
+    def _actual_init(self):
         self.current_alarm = None
         self.nb_vibrat_total = 0  # number of time it vibrated
         self.nb_vibrat_per_alarm = 10  # number of times to vibrate each time
@@ -67,8 +70,11 @@ class PomodoroApp():
         self.queue = _PRESETS[0]
         self.last_run = -1
         self.state = _STOPPED
+        return True
 
     def foreground(self):
+        if not self._already_initialized:
+            self._already_initialized = self._actual_init()
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH |
                                   wasp.EventMask.SWIPE_LEFTRIGHT |
