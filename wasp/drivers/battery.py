@@ -5,6 +5,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 import micropython
+# don't remove Pin import even though your IDE tells you it's unused!
+# It's used by micropython to know battery level.
 from machine import ADC, Pin
 
 
