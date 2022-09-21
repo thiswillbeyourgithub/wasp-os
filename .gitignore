@@ -15,6 +15,7 @@ wasp/apps/SleepTk.py
 logs
 Morse.txt
 pull_sleep_data.py
+plotter.py
 rm_sleep_data.py
 README_sleeptk.md
 ulab
