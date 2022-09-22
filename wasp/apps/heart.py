@@ -72,7 +72,7 @@ class HeartApp():
 
         spl = self._hrdata.preprocess(wasp.watch.hrs.read_hrs())
 
-        if len(self._hrdata.data) >= 480:
+        if len(self._hrdata.data) >= 240:
             draw.set_color(wasp.system.theme('bright'))
             draw.string('{} bpm'.format(self._hrdata.get_heart_rate()),
                         0, 6, width=240)
