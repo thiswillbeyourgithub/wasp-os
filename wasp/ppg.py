@@ -137,20 +137,6 @@ class PPG():
 
         data = memoryview(self.data)
 
-#        top_val = array.array('f', (0, 0, 0, 0, 0))
-#        top_index = array.array('b', (0, 0, 0, 0, 0))
-#        alpha = 0.1
-#        n = len(data)
-#        for i in range(1, n):
-#            acf = alpha * data[i] + (1-alpha)*data[i]*data[n-i]
-#            for ii in range(len(top_val)):
-#                if acf > top_val[ii]:
-#                    top_val[ii] = int(acf)
-#                    top_index[ii] = i
-#                    break
-#
-#        print(top_index)
-#
         # Search initially from ~210 to 30 bpm
         t0 = trough(data, 7, 48)
         if t0 < 0:
@@ -177,13 +163,14 @@ class PPG():
         return (60 * 24 * 4) // t3
 
     def get_heart_rate(self):
-        if len(self.data) < 200:
+        if len(self.data) < 24:  # don't estimate under 1 sec of recording
             return None
 
         hr = self._get_heart_rate()
 
-        # Clear out the accumulated data
-        self.data = array.array('b')
+        if hr is not None and len(self.data) > 240:
+            # Clear out passed accumulated data more than 10s ago
+            self.data = array.array('b', self.data[-240:])
 
         # Dump the debug data
         if self.debug:
