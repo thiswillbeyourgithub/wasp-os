@@ -137,6 +137,20 @@ class PPG():
 
         data = memoryview(self.data)
 
+#        top_val = array.array('f', (0, 0, 0, 0, 0))
+#        top_index = array.array('b', (0, 0, 0, 0, 0))
+#        alpha = 0.1
+#        n = len(data)
+#        for i in range(1, n):
+#            acf = alpha * data[i] + (1-alpha)*data[i]*data[n-i]
+#            for ii in range(len(top_val)):
+#                if acf > top_val[ii]:
+#                    top_val[ii] = int(acf)
+#                    top_index[ii] = i
+#                    break
+#
+#        print(top_index)
+#
         # Search initially from ~210 to 30 bpm
         t0 = trough(data, 7, 48)
         if t0 < 0:
