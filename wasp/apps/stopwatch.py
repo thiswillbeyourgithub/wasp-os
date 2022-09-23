@@ -181,7 +181,7 @@ class StopwatchApp():
             else:
                 m = ""
 
-            t = '{}{}{:02}s  {}cs'.format(h, m, secs, centisecs)
+            t = '{}{}{:02}s  {:02}cs'.format(h, m, secs, centisecs)
 
             y = 35
             draw = wasp.watch.drawable
