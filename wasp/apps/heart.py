@@ -80,6 +80,7 @@ class HeartApp():
             draw.set_color(wasp.system.theme('bright'))
             draw.string('{} bpm'.format(bpm),
                         0, 6, width=240)
+            wasp.system.latest_bpm = bpm
 
         # Graph is orange by default...
         color = wasp.system.theme('spot1')
