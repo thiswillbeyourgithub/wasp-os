@@ -187,7 +187,7 @@ class StopwatchApp():
             draw = wasp.watch.drawable
             draw.set_font(fonts.sans24)
             draw.set_color(draw.lighten(wasp.system.theme('ui'), wasp.system.theme('contrast')))
-            draw.string(t, 0, y, 0, False)
+            draw.string(t, 0, y, 240, False)
 
             self._timer_last_count = self._timer_count
 
