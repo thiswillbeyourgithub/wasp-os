@@ -53,7 +53,5 @@ wasp.system.blank_after = 300
 #wasp.system.register('apps.calc.CalculatorApp', False, no_except=True)
 wasp._is_in_simulation = True
 
-
-
 wasp.system.run()
 # don't put anything under this

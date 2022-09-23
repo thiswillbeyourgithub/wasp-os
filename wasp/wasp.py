@@ -113,6 +113,7 @@ class Manager():
         self.weatherinfo = {}
         self.units = "Metric"
         self.battery_unit = "mV"
+        self.hrm_freq = 5
 
         self._theme = (
                 b'\x7b\xef'     # ble
@@ -591,6 +592,9 @@ class Manager():
 
         self._scheduling = enable
 
+        if hasattr(self, "hrm_freq") and self.hrm_freq != 0:
+            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq, self._perdiodic_heartrt_rate)
+
     def set_theme(self, new_theme) -> bool:
         """Sets the system theme.
 
@@ -618,5 +622,65 @@ class Manager():
             raise IndexError('Theme part {} does not exist'.format(theme_part))
         idx = theme_parts.index(theme_part) * 2
         return (self._theme[idx] << 8) | self._theme[idx+1]
+
+    def _perdiodic_heartrt_rate(self):
+        """
+        compute heart rate periodically and store it as an attribute of self
+        to display it in the menu bar.
+        This does not use the same tick mechanism because this is not an app
+        """
+        if self.sleep_at:
+            # is not currently sleeping, wait 1 minute
+            self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heartrt_rate)
+            return
+        elif not self.hrm_freq:
+            # setting was disabled. Don't run and don't schedule next run
+            return
+
+        try:
+            self.wake()
+            watch.display.mute(True)
+            watch.display.poweroff()
+            watch.touch.sleep()
+            self.latest_bpm = "R"  # "recording"
+            import ppg
+            watch.hrs.enable()
+            hrdata = ppg.PPG(watch.hrs.read_hrs())
+            t = machine.Timer(id=1, period=8000000)
+            while len(hrdata.data) < 240:
+                t.start()
+                hrdata.preprocess(watch.hrs.read_hrs())
+                if self._button.get_event():
+                    # button pressed, stop and reschedule in 1 minute
+                    self.latest_bpm = "I"  # for "interrupted"
+                    t.stop()
+                    watch.hrs.disable()
+                    self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heartrt_rate)
+                    watch.touch.wake()
+                    watch.display.poweron()
+                    watch.display.mute(False)
+                    watch.backlight.set(self._brightness)
+                    return
+                while t.time() < 41666:
+                    pass
+                t.stop()
+            del ppg, t
+            watch.hrs.disable()
+            bpm = hrdata.get_heart_rate()
+            del hrdata
+
+            if bpm is None:
+                self.latest_bpm = "?"
+            else:
+                self.latest_bpm = bpm
+
+        except Exception as err:
+            self.switch(PagerApp("Issue when getting heart rate: '{}'".format(err)))
+        finally:
+            watch.hrs.disable()
+            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq, self._perdiodic_heartrt_rate)
+            self.sleep()
+        return
+
 
 system = Manager()

@@ -34,6 +34,8 @@ class SettingsApp():
     def _actual_init(self):
         self._slider = wasp.widgets.Slider(3, 10, 90)
         self._nfy_slider = wasp.widgets.Slider(3, 10, 90)
+        self._hrm_slider = wasp.widgets.Slider(5, 10, 90)
+        self._hrm_freq_values = (0, 5, 15, 30, 60)
         self._scroll_indicator = wasp.widgets.ScrollIndicator()
         self._HH = wasp.widgets.Spinner(50, 60, 0, 23, 2)
         self._MM = wasp.widgets.Spinner(130, 60, 0, 59, 2)
@@ -44,7 +46,7 @@ class SettingsApp():
         self._units_toggle = wasp.widgets.Button(32, 90, 176, 48, "Change")
         self._batt = ['Percent', 'mV', 'Icon']
         self._battery_toggle = wasp.widgets.Button(32, 90, 176, 48, "Change")
-        self._settings = ['Brightness', 'Battery', 'Notification Level', 'Time', 'Date', 'Units']
+        self._settings = ['Brightness', 'Battery', 'Notification Level', 'Time', 'Date', 'Units', "HRM freq"]
         self._sett_index = 0
         self._current_setting = self._settings[0]
         return True
@@ -84,6 +86,11 @@ class SettingsApp():
         elif self._current_setting == 'Battery':
             if self._battery_toggle.touch(event):
                 wasp.system.battery_unit = self._batt[(self._batt.index(wasp.system.battery_unit) + 1) % len(self._batt)]
+        elif self._current_setting == "HRM freq":
+            if self._hrm_slider.touch(event):
+                wasp.system.hrm_freq = self._hrm_freq_values[self._hrm_slider.value]
+                if wasp.system.hrm_freq != 0:
+                    wasp.system.set_alarm(wasp.watch.rtc.time() + 60 * wasp.system.hrm_freq, wasp.system._perdiodic_heartrt_rate)
         self._update()
 
     def swipe(self, event):
@@ -151,6 +158,13 @@ class SettingsApp():
                 say = "Low"
             self._slider.update()
             draw.string(say, 0, 150, width=240)
+        elif self._current_setting == "HRM freq":
+            self._hrm_slider.draw()
+            draw.string("In minutes", 0, 40, 240)
+            val = str(self._hrm_freq_values[self._hrm_slider.value])
+            if val == "0":
+                val = "OFF"
+            draw.string(val, 0, 150, 240)
         elif self._current_setting == 'Notification Level':
             if wasp.system.notify_level == 3:
                 say = "High"

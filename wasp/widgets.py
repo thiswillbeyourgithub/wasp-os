@@ -193,6 +193,11 @@ class StatusBar:
         self._clock.draw()
         self._meter.draw()
         self._notif.draw()
+        if hasattr(wasp.system, "latest_bpm"):
+            draw = watch.drawable
+            draw.set_font(fonts.sans18)
+            draw.set_color(0xf800)
+            draw.string(str(wasp.system.latest_bpm), 60, 5)
 
     def update(self):
         """Lazily update the status bar.
