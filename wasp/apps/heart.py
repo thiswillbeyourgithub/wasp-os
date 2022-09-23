@@ -43,7 +43,6 @@ class HeartApp():
     def __init__(self):
         self._debug = False
         self._hrdata = None
-        self._last_value = wasp.watch.rtc.time()
 
     def foreground(self):
         """Activate the application."""
@@ -62,10 +61,12 @@ class HeartApp():
         if self._debug:
             self._hrdata.enable_debug()
         self._x = 0
+        self._last_value = wasp.watch.rtc.time()
 
     def background(self):
         wasp.watch.hrs.disable()
         self._hrdata = None
+        del self._last_value
 
     def _subtick(self, ticks):
         """Notify the application that its periodic tick is due."""
