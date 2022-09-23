@@ -4,4 +4,5 @@
 import wasp
 # from gadgetbridge import *
 wasp._is_in_simulation = False
+wasp.watch.hrs.disable()
 wasp.system.schedule()
