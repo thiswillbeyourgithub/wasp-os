@@ -653,7 +653,7 @@ class Manager():
                 self.sleep_at = watch.rtc.uptime + self.blank_after
                 if self._button.get_event():
                     # button pressed, stop and reschedule in 1 minute
-                    self.latest_bpm = "I"  # for "interrupted"
+                    self.latest_bpm += "I"  # for "interrupted"
                     t.stop()
                     watch.hrs.disable()
                     self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heart_rate)
@@ -669,12 +669,12 @@ class Manager():
             del hrdata
 
             if bpm is None:
-                self.latest_bpm = "?"
+                self.latest_bpm += "?"
             else:
                 self.latest_bpm = bpm
 
         except Exception as err:
-                self.latest_bpm = "??"
+            self.latest_bpm = "??"
             self.switch(PagerApp("Issue when getting heart rate: '{}'".format(err)))
         finally:
             watch.hrs.disable()
