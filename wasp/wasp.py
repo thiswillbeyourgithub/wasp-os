@@ -673,6 +673,7 @@ class Manager():
                 self.latest_bpm = bpm
 
         except Exception as err:
+                self.latest_bpm = "??"
             self.switch(PagerApp("Issue when getting heart rate: '{}'".format(err)))
         finally:
             watch.hrs.disable()
