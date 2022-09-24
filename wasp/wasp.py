@@ -623,7 +623,7 @@ class Manager():
         idx = theme_parts.index(theme_part) * 2
         return (self._theme[idx] << 8) | self._theme[idx+1]
 
-    def _perdiodic_heartrt_rate(self):
+    def _perdiodic_heart_rate(self):
         """
         compute heart rate periodically and store it as an attribute of self
         to display it in the menu bar.
@@ -631,7 +631,7 @@ class Manager():
         """
         if self.sleep_at:
             # is not currently sleeping, wait 1 minute
-            self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heartrt_rate)
+            self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heart_rate)
             return
         elif not self.hrm_freq:
             # setting was disabled. Don't run and don't schedule next run
@@ -655,7 +655,7 @@ class Manager():
                     self.latest_bpm = "I"  # for "interrupted"
                     t.stop()
                     watch.hrs.disable()
-                    self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heartrt_rate)
+                    self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heart_rate)
                     watch.touch.wake()
                     watch.display.poweron()
                     return
@@ -676,7 +676,7 @@ class Manager():
             self.switch(PagerApp("Issue when getting heart rate: '{}'".format(err)))
         finally:
             watch.hrs.disable()
-            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq, self._perdiodic_heartrt_rate)
+            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq, self._perdiodic_heart_rate)
             self.sleep()
         return
 

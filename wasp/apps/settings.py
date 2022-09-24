@@ -90,7 +90,7 @@ class SettingsApp():
             if self._hrm_slider.touch(event):
                 wasp.system.hrm_freq = self._hrm_freq_values[self._hrm_slider.value]
                 if wasp.system.hrm_freq != 0:
-                    wasp.system.set_alarm(wasp.watch.rtc.time() + 60 * wasp.system.hrm_freq, wasp.system._perdiodic_heartrt_rate)
+                    wasp.system.set_alarm(wasp.watch.rtc.time() + 60 * wasp.system.hrm_freq, wasp.system._perdiodic_heart_rate)
         self._update()
 
     def swipe(self, event):
