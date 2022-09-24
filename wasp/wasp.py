@@ -639,7 +639,6 @@ class Manager():
 
         try:
             self.wake()
-            watch.display.mute(True)
             watch.display.poweroff()
             watch.touch.sleep()
             self.latest_bpm = "R"  # "recording"
@@ -650,6 +649,7 @@ class Manager():
             while len(hrdata.data) < 240:
                 t.start()
                 hrdata.preprocess(watch.hrs.read_hrs())
+                self.sleep_at = watch.rtc.uptime + self.blank_after
                 if self._button.get_event():
                     # button pressed, stop and reschedule in 1 minute
                     self.latest_bpm = "I"  # for "interrupted"
@@ -658,8 +658,6 @@ class Manager():
                     self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heartrt_rate)
                     watch.touch.wake()
                     watch.display.poweron()
-                    watch.display.mute(False)
-                    watch.backlight.set(self._brightness)
                     return
                 while t.time() < 41666:
                     pass
