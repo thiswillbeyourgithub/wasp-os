@@ -114,9 +114,6 @@ class Manager():
         self.units = "Metric"
         self.battery_unit = "mV"
         self.hrm_freq = 15
-        if hasattr(self, "hrm_freq") and self.hrm_freq > 0:
-            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq,
-                           self._perdiodic_heart_rate)
 
 
         self._theme = (
@@ -148,6 +145,10 @@ class Manager():
         self._charging = True
         self._scheduled = False
         self._scheduling = False
+
+        if hasattr(self, "hrm_freq") and self.hrm_freq > 0:
+            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq,
+                           self._perdiodic_heart_rate)
 
     def secondary_init(self):
         global free
