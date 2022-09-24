@@ -113,7 +113,11 @@ class Manager():
         self.weatherinfo = {}
         self.units = "Metric"
         self.battery_unit = "mV"
-        self.hrm_freq = 5
+        self.hrm_freq = 15
+        if hasattr(self, "hrm_freq") and self.hrm_freq > 0:
+            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq,
+                           self._perdiodic_heart_rate)
+
 
         self._theme = (
                 b'\x7b\xef'     # ble
@@ -591,9 +595,6 @@ class Manager():
             watch.schedule = watch.nop
 
         self._scheduling = enable
-
-        if hasattr(self, "hrm_freq") and self.hrm_freq != 0:
-            self.set_alarm(watch.rtc.time() + 60 * self.hrm_freq, self._perdiodic_heartrt_rate)
 
     def set_theme(self, new_theme) -> bool:
         """Sets the system theme.
