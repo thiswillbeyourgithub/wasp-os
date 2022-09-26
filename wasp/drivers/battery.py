@@ -8,6 +8,7 @@ import micropython
 # don't remove Pin import even though your IDE tells you it's unused!
 # It's used by micropython to know battery level.
 from machine import ADC, Pin
+import array
 
 
 class Battery(object):
@@ -29,7 +30,7 @@ class Battery(object):
         self._battery = ADC(battery)
         self._charging = charging
         self._power = power
-        self._cache = set()
+        self._cache = array.array("I")
 
     @micropython.native
     def charging(self):
@@ -64,10 +65,10 @@ class Battery(object):
         raw = self._battery.read_u16()
         mv = (2 * 3300 * raw) // 65535
 
-        if mv not in self._cache:
-            self._cache.add(mv)
+        if mv not in list(self._cache):
+            self._cache.append(mv)
             while len(self._cache) > 2:
-                self._cache.pop()
+                self._cache = self._cache[-2:]
         return (sum(self._cache) + self._cache[-1]) / (len(self._cache) + 1)
 
     def level(self):
