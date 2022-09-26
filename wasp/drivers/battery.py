@@ -68,7 +68,7 @@ class Battery(object):
             self._cache.add(mv)
             while len(self._cache) > 2:
                 self._cache.pop()
-        return sum(self._cache) / len(self._cache)
+        return (sum(self._cache) + self._cache[-1]) / (len(self._cache) + 1)
 
     def level(self):
         """Estimate the battery level.
