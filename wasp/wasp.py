@@ -113,7 +113,7 @@ class Manager():
         self.weatherinfo = {}
         self.units = "Metric"
         self.battery_unit = "mV"
-        self.hrm_freq = 15
+        self.hrm_freq = 0
 
 
         self._theme = (
