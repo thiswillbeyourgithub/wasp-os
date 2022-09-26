@@ -114,6 +114,7 @@ class Manager():
         self.units = "Metric"
         self.battery_unit = "mV"
         self.hrm_freq = 0
+        self.latest_bpm = -1
 
 
         self._theme = (
@@ -635,7 +636,7 @@ class Manager():
             # is not currently sleeping, wait 1 minute
             self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heart_rate)
             return
-        elif not self.hrm_freq:
+        if not self.hrm_freq > 0:
             # setting was disabled. Don't run and don't schedule next run
             return
 

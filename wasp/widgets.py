@@ -193,7 +193,7 @@ class StatusBar:
         self._clock.draw()
         self._meter.draw()
         self._notif.draw()
-        if hasattr(wasp.system, "latest_bpm"):
+        if hasattr(wasp.system, "hrm_freq") and wasp.system.hrm_freq > 0:
             draw = watch.drawable
             draw.set_font(fonts.sans18)
             #draw.set_color(0xf800)
