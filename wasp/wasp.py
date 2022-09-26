@@ -643,7 +643,6 @@ class Manager():
             self.wake()
             watch.display.poweroff()
             watch.touch.sleep()
-            self.latest_bpm = "R"  # "recording"
             import ppg
             watch.hrs.enable()
             hrdata = ppg.PPG(watch.hrs.read_hrs())
@@ -654,7 +653,10 @@ class Manager():
                 self.sleep_at = watch.rtc.uptime + self.blank_after
                 if self._button.get_event():
                     # button pressed, stop and reschedule in 1 minute
-                    self.latest_bpm += "I"  # for "interrupted"
+                    if "I" not in self.latest_bpm:
+                        self.latest_bpm += "I"  # for "interrupted"
+                    else:
+                        self.latest_bpm = "I"
                     t.stop()
                     watch.hrs.disable()
                     self.set_alarm(watch.rtc.time() + 60, self._perdiodic_heart_rate)
@@ -670,7 +672,10 @@ class Manager():
             del hrdata
 
             if bpm is None:
-                self.latest_bpm += "?"
+                if "?" not in self.latest_bpm:
+                    self.latest_bpm += "?"
+                else:
+                    self.latest_bpm = "?"
             else:
                 self.latest_bpm = bpm
 
