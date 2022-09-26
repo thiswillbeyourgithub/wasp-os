@@ -56,8 +56,7 @@ class SettingsApp():
             self._already_initialized = self._actual_init()
         self._slider.value = wasp.system.brightness - 1
         self._draw()
-        wasp.system.request_event(wasp.EventMask.TOUCH)
-        wasp.system.request_event(wasp.EventMask.SWIPE_UPDOWN)
+        wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_UPDOWN)
 
     def touch(self, event):
         if self._current_setting == 'Brightness':
