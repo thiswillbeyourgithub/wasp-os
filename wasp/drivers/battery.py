@@ -65,11 +65,12 @@ class Battery(object):
         raw = self._battery.read_u16()
         mv = (2 * 3300 * raw) // 65535
 
-        if mv not in list(self._cache):
-            self._cache.append(mv)
-            while len(self._cache) > 2:
-                self._cache = self._cache[-2:]
-        return (sum(self._cache) + self._cache[-1]) / (len(self._cache) + 1)
+        if mv != self._cache[0] and mv != self._cache[1]:
+            self._cache[0] = self._cache[1]
+            self._cache[1] = mv
+        if len(self._cache) > 2:
+            self._cache = self._cache[-2:]
+        return sum(self._cache) / 2
 
     def level(self):
         """Estimate the battery level.
