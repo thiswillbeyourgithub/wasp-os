@@ -12,6 +12,7 @@ Simple stop/start watch with support for split times.
 import wasp
 import icons
 import fonts
+import os
 
 class StopwatchApp():
     """Stopwatch application."""
@@ -24,8 +25,23 @@ class StopwatchApp():
         self._already_initialized = False
 
     def _actual_init(self):
-        self._timer_reset()
-        self._reset()
+        self._splits = []
+        self._nsplits = 0
+        self._timer_count = 0
+        self._timer_last_count = -1
+        if "stopwatch.txt" in os.listdir():
+            try:
+                with open("stopwatch.txt", "r") as f:
+                    self._timer_started_at = int(int(f.readlines()[0]) - wasp.watch.rtc.time()) * 100
+            except Exception as err:
+                wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
+                    "src": "Stopwatch",
+                    "title": "Stopwatch",
+                    "body": "Error when loading starttime: '{}'".format(err)})
+                self._timer_started_at = 0
+                os.remove("stopwatch.txt")
+        else:
+            self._timer_started_at = 0
         return True
 
     def foreground(self):
@@ -138,9 +154,19 @@ class StopwatchApp():
     def _timer_start(self):
         uptime = wasp.watch.rtc.get_uptime_ms() // 10
         self._timer_started_at = uptime - self._timer_count
+        try:
+            with open("stopwatch.txt", "w") as f:
+                f.write(str(int(wasp.watch.rtc.time())))
+        except Exception as err:
+            wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
+                "src": "Stopwatch",
+                "title": "Stopwatch",
+                "body": "Error when storing starttime: '{}'".format(err)})
 
     def _timer_stop(self):
         self._timer_started_at = 0
+        if "stopwatch.txt" in os.listdir():
+            os.remove("stopwatch.txt")
 
     @property
     def _timer_started(self):
@@ -190,4 +216,3 @@ class StopwatchApp():
             draw.string(t, 0, y, 240, False)
 
             self._timer_last_count = self._timer_count
-
