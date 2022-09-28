@@ -173,13 +173,13 @@ class Manager():
     def register_defaults(self):
         """Register the default applications."""
         self.register('apps.clock.ClockApp', True, no_except=True)
-        #self.register('apps.steps.StepCounterApp', True, no_except=True)
-        self.register('apps.flashlight.TorchApp', True, no_except=True)
-        self.register('apps.heart.HeartApp', True, no_except=True)
-        self.register('apps.timer.TimerApp', True, no_except=True)
-        self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
-
         try:
+            #self.register('apps.steps.StepCounterApp', True, no_except=True)
+            self.register('apps.flashlight.TorchApp', True, no_except=True)
+            self.register('apps.heart.HeartApp', True, no_except=True)
+            self.register('apps.timer.TimerApp', True, no_except=True)
+            self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
+
             self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
             self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
             self.register('apps.alarm.AlarmApp', False, no_except=True)
@@ -190,8 +190,16 @@ class Manager():
             self.register('apps.calc.CalculatorApp', False, no_except=True)
             self.register('apps.software.SoftwareApp', False, no_except=True)
             self.register('apps.settings.SettingsApp', False, no_except=True)
-        except MemoryError:
-            self.switch(PagerApp("Your ran out of memory when loading default apps."))
+        except MemoryError as err:
+            self.notify(watch.rtc.get_uptime_ms(), {
+                "src": "AppLoader",
+                "title": "AppLoading",
+                "body": "MemoryError when loading app: '{}'".format(err)})
+        except Exception as err:
+            self.notify(watch.rtc.get_uptime_ms(), {
+                "src": "AppLoader",
+                "title": "AppLoading",
+                "body": "Error when loading app: '{}'".format(err)})
 
     def register(self, app, quick_ring=False, watch_face=False, no_except=False):
         """Register an application with the system.
@@ -226,7 +234,7 @@ class Manager():
                 self.steps = steplogger.StepLogger(self)
             except ImportError:
                 self.switch(PagerApp("Could not import steplogger, maybe you "
-                                     "disabled it in the manifest?"))
+                                     "disabled it in the manifest file?"))
 
         if watch_face:
             self.quick_ring[0] = app
