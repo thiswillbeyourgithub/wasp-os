@@ -104,7 +104,6 @@ class AlarmApp:
             wasp.system.switch(PagerApp("Error when reloading alarms: "
                                          "'{}'".format(err)))
         self._set_pending_alarms()
-        return True
 
     def foreground(self):
         """Activate the application."""
