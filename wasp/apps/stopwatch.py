@@ -29,18 +29,21 @@ class StopwatchApp():
         self._nsplits = 0
         self._timer_count = 0
         self._timer_last_count = -1
+
         if "stopwatch.txt" in os.listdir():
             try:
                 with open("stopwatch.txt", "r") as f:
-                    self._timer_started_at = int(int(f.readlines()[0]) - wasp.watch.rtc.time()) * 100
+                    self._offset_cs = int(int(f.readlines()[0]) - wasp.watch.rtc.time()) * 100
+                    uptime = wasp.watch.rtc.get_uptime_ms() // 10
+                    self._timer_started_at = uptime - self._timer_count + self._offset_cs
             except Exception as err:
                 wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
                     "src": "Stopwatch",
                     "title": "Stopwatch",
                     "body": "Error when loading starttime: '{}'".format(err)})
-                self._timer_started_at = 0
                 os.remove("stopwatch.txt")
         else:
+            self._offset_cs = 0
             self._timer_started_at = 0
         return True
 
@@ -165,6 +168,7 @@ class StopwatchApp():
 
     def _timer_stop(self):
         self._timer_started_at = 0
+        self._offset_cs = 0
         if "stopwatch.txt" in os.listdir():
             os.remove("stopwatch.txt")
 
