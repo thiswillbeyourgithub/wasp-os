@@ -65,11 +65,14 @@ class Battery(object):
         raw = self._battery.read_u16()
         mv = (2 * 3300 * raw) // 65535
 
+        if len(self._cache) < 2:
+            self._cache.append(mv)
+            return mv
+        if len(self._cache) > 2:
+            self._cache = self._cache[-2:]
         if mv != self._cache[0] and mv != self._cache[1]:
             self._cache[0] = self._cache[1]
             self._cache[1] = mv
-        if len(self._cache) > 2:
-            self._cache = self._cache[-2:]
         return sum(self._cache) / 2
 
     def level(self):
