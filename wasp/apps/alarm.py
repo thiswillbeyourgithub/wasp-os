@@ -20,7 +20,6 @@ import time
 import widgets
 import array
 from micropython import const
-from apps.pager import PagerApp
 
 # 2-bit RLE, generated from res/alarm_icon.png, 390 bytes
 icon = (
@@ -86,23 +85,26 @@ class AlarmApp:
         self.page = _HOME_PAGE
         self.alarms = (bytearray(3), bytearray(3), bytearray(3), bytearray(3))
         self.pending_alarms = array.array('d', [0.0, 0.0, 0.0, 0.0])
-
         self.num_alarms = 0
-        try:
-            with open("alarms.txt", "r") as f:
-                alarms = f.readlines()[0].split(";")
-            if "" in alarms:
-                alarms.remove("")
-            for alarm in alarms:
-                n = self.num_alarms
-                h, m, st = map(int, alarm.split(","))
-                self.alarms[n][_HOUR_IDX] = h
-                self.alarms[n][_MIN_IDX] = m
-                self.alarms[n][_ENABLED_IDX] = st
-                self.num_alarms += 1
-        except Exception as err:
-            wasp.system.switch(PagerApp("Error when reloading alarms: "
-                                         "'{}'".format(err)))
+
+        alarms = wasp.system.get_settings("alarms")
+        print(alarms)
+        if alarms:
+            if isinstance(alarms, str):
+                alarms = [alarms]
+            try:
+                for alarm in alarms:
+                    n = self.num_alarms
+                    h, m, st = map(int, alarm.split(","))
+                    self.alarms[n][_HOUR_IDX] = h
+                    self.alarms[n][_MIN_IDX] = m
+                    self.alarms[n][_ENABLED_IDX] = st
+                    self.num_alarms += 1
+            except Exception as err:
+                wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
+                    "src": "Alarms",
+                    "title": "Alarm loading failed",
+                    "body": "Error when loading alarms '{}'".format(err)})
         self._set_pending_alarms()
 
     def foreground(self):
@@ -145,16 +147,15 @@ class AlarmApp:
         del self.day_btns
 
         self._set_pending_alarms()
-        try:
-            if self.num_alarms == 0:
-                return
-            with open("alarms.txt", "w") as f:
-                for n in range(self.num_alarms):
-                    al = self.alarms[n]
-                    f.write(",".join(map(str, al)) + ";")
-        except Exception as err:
-            wasp.system.switch(PagerApp("Error when saving alarms for next"
-                                         " reboot: '{}'".format(err)))
+
+        if self.num_alarms != 0:
+            to_store = []
+            for al in self.alarms:
+                if sum(al) != 0:
+                    to_store.append(",".join([str(x) for x in al]))
+            assert wasp.system.store_settings("alarms", to_store)
+        else:
+            wasp.system.get_settings("alarms", delete=True)
 
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
