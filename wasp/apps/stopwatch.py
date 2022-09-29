@@ -30,18 +30,16 @@ class StopwatchApp():
         self._timer_count = 0
         self._timer_last_count = -1
 
-        if "stopwatch.txt" in os.listdir():
+        offset = wasp.system.get_settings("stopwatch_start")
+        if offset:
             try:
-                with open("stopwatch.txt", "r") as f:
-                    self._offset_cs = int(int(f.readlines()[0]) - wasp.watch.rtc.time()) * 100
-                    uptime = wasp.watch.rtc.get_uptime_ms() // 10
-                    self._timer_started_at = uptime - self._timer_count + self._offset_cs
+                self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
+                self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
             except Exception as err:
                 wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
                     "src": "Stopwatch",
                     "title": "Stopwatch",
-                    "body": "Error when loading starttime: '{}'".format(err)})
-                os.remove("stopwatch.txt")
+                    "body": "Error when loading last start time: '{}'".format(err)})
         else:
             self._offset_cs = 0
             self._timer_started_at = 0
@@ -157,20 +155,12 @@ class StopwatchApp():
     def _timer_start(self):
         uptime = wasp.watch.rtc.get_uptime_ms() // 10
         self._timer_started_at = uptime - self._timer_count
-        try:
-            with open("stopwatch.txt", "w") as f:
-                f.write(str(int(wasp.watch.rtc.time())))
-        except Exception as err:
-            wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
-                "src": "Stopwatch",
-                "title": "Stopwatch",
-                "body": "Error when storing starttime: '{}'".format(err)})
+        assert wasp.system.store_settings("stopwatch_start", int(wasp.watch.rtc.time()))
 
     def _timer_stop(self):
         self._timer_started_at = 0
         self._offset_cs = 0
-        if "stopwatch.txt" in os.listdir():
-            os.remove("stopwatch.txt")
+        wasp.system.get_settings("stopwatch_start", delete=True)
 
     @property
     def _timer_started(self):
