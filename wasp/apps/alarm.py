@@ -90,10 +90,12 @@ class AlarmApp:
         alarms = wasp.system.get_settings("alarms")
         print(alarms)
         if alarms:
-            if isinstance(alarms, str):
+            if isinstance(alarms, str):  # only 1 alarm found
                 alarms = [alarms]
             try:
                 for alarm in alarms:
+                    if alarm == "":
+                        continue
                     n = self.num_alarms
                     h, m, st = map(int, alarm.split(","))
                     self.alarms[n][_HOUR_IDX] = h
