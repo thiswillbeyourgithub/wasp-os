@@ -32,17 +32,16 @@ class StopwatchApp():
 
         offset = wasp.system.get_settings("stopwatch_start")
         if offset:
-            try:
-                self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
-                self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
-            except Exception as err:
-                wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
-                    "src": "Stopwatch",
-                    "title": "Stopwatch",
-                    "body": "Error when loading last start time: '{}'".format(err)})
+            self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
+            self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
+            splits = wasp.system.get_settings("stopwatch_splits")
+            if splits:
+                self._splits = [int(x) for x in splits]
+                self._nsplits = len(self._splits)
         else:
             self._offset_cs = 0
             self._timer_started_at = 0
+
         return True
 
     def foreground(self):
@@ -81,6 +80,7 @@ class StopwatchApp():
             del self._splits[9:]
             self._nsplits += 1
             wasp.watch.vibrator.pulse(duty=50, ms=50)
+            wasp.system.store_settings("stopwatch_splits", self._splits)
         else:
             self._reset()
             wasp.watch.vibrator.pulse(duty=50, ms=50)
@@ -161,6 +161,7 @@ class StopwatchApp():
         self._timer_started_at = 0
         self._offset_cs = 0
         wasp.system.get_settings("stopwatch_start", delete=True)
+        wasp.system.get_settings("stopwatch_splits", delete=True)
 
     @property
     def _timer_started(self):
