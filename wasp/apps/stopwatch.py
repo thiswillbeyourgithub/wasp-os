@@ -155,7 +155,7 @@ class StopwatchApp():
     def _timer_start(self):
         uptime = wasp.watch.rtc.get_uptime_ms() // 10
         self._timer_started_at = uptime - self._timer_count
-        assert wasp.system.store_settings("stopwatch_start", int(wasp.watch.rtc.time()))
+        wasp.system.store_settings("stopwatch_start", int(wasp.watch.rtc.time()))
 
     def _timer_stop(self):
         self._timer_started_at = 0

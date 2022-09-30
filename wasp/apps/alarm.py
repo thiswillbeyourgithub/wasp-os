@@ -155,7 +155,7 @@ class AlarmApp:
             for al in self.alarms:
                 if sum(al) != 0:
                     to_store.append(",".join([str(x) for x in al]))
-            assert wasp.system.store_settings("alarms", to_store)
+            wasp.system.store_settings("alarms", to_store)
         else:
             wasp.system.get_settings("alarms", delete=True)
 
