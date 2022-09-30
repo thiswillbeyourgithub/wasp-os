@@ -35,7 +35,7 @@ _FONT = fonts.sans18
 
 # Precomputed for efficiency
 _LINEH = const(30) # int(_FONTH * 1.25)
-_MAXLINES = const(7) # floor(_HEIGHT / _LINEH) - 1 # the "-1" is the input line
+_MAXLINES = const(8) # floor(_HEIGHT / _LINEH) - 1 # the "-1" is the input line
 
 # The morse lookup table, represented as a flattened binary tree.
 # The head is the value of the node, the tail are the subtrees:
@@ -70,47 +70,42 @@ class MorseApp():
 
     def foreground(self):
         try:
-            f = open("Morse.txt", "r")
-            text = "".join(f.readlines()).replace("\n", "%").replace("%%", "%")
-            f.close()
-            text = text.split("%")
+            text = [t.strip() for t in wasp.system.get_settings("morse") if t.strip() != ""]
             if len(text) > _MAXLINES:
-                text = text[-_MAXLINES:]
-            self.text = text
+                self.text = text[-_MAXLINES:]
+                self.buffer = text[:-_MAXLINES]
         except:
             self.text = [""]
+            self.buffer = []
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH |
                                   wasp.EventMask.SWIPE_LEFTRIGHT |
                                   wasp.EventMask.SWIPE_UPDOWN)
 
     def background(self):
-        text = "%".join(self.text)
-        f = open("Morse.txt", "w")
-        for line in text:
-            f.write(line)
-        f.close()
+        wasp.system.store_settings("morse", self.buffer + self.text)
 
     def swipe(self, event):
+        self.adjust_buffer()
         if event[0] == wasp.EventType.LEFT:
             if self.letter == "":
                 if self.text[-1] == "" and len(self.text) > 1:
-                    self.text.pop(-1)
+                    self.text.pop(-1)  # remove last line
+                    self._draw()
                 else:
-                    self.text[-1] = str(self.text[-1])[:-1]
+                    self.text[-1] = self.text[-1][:-1]  # remove last character
+                    self._update()
             self.letter = ""
-            self.text[-1] = "{}  ".format(self.text[-1])  # adds space, otherwise the screen will not be erased there
-            self._update()
-            self.text[-1] = str(self.text[-1])[:-2]  # removes space
         elif event[0] == wasp.EventType.RIGHT:
             if self.text[-1].endswith(" "):
-                self.text.append("")
+                self.text.append("")   # add nothing but on a new line
                 self._draw()
             else:
-                self._add_letter(" ")
+                self._add_letter(" ")  # add space
         else:
             if len(self.letter) < _MAXINPUT:
                 self.letter += "-" if event[0] == wasp.EventType.UP else "."
+                self.adjust_buffer()
                 self._update()
 
     def touch(self, event):
@@ -123,24 +118,28 @@ class MorseApp():
         if len(split) > 2:
             self.text.append(self.text[-1][split[1]:split[2]] + addition)
             self.text[-2] = self.text[-2][split[0]:split[1]]
-            if len(self.text) > _MAXLINES:
-                self.text.pop(0)
             # Ideally a full refresh should be done only when we exceed
             # _MAXLINES, but this should be fast enough
             self._draw()
         else:
             self.text[-1] = merged
         self.letter = ""
+        self.adjust_buffer()
         self._update()
+
+    def adjust_buffer(self):
+        while len(self.text) > _MAXLINES:
+            self.buffer.append(self.text.pop(0))
+        if len(self.text) < _MAXLINES and len(self.buffer) > 0:
+            self.text.insert(0, self.buffer.pop())
 
     def _draw(self):
         """Draw the display from scratch"""
         draw = wasp.watch.drawable
         draw.fill()
-        i = 0
-        for line in self.text:
-            draw.string(line, 0, _LINEH * i)
-            i += 1
+        self.adjust_buffer()
+        for i, line in enumerate(self.text):
+            draw.string(line.replace(" ", "."), 0, _LINEH * i)
         self._update()
 
     def _update(self):
@@ -148,9 +147,9 @@ class MorseApp():
         input line and last line of the text.
         The full text area is updated in _draw() instead."""
         draw = wasp.watch.drawable
-        draw.string(self.text[-1], 0, _LINEH*(len(self.text)-1))
-        guess = self._lookup(self.letter)
-        draw.string("{} {}".format(self.letter, guess), 0, _HEIGHT - _FONTH, width=_WIDTH)
+        draw.fill(None, x=0, y=_LINEH*(len(self.text)-1), w=_WIDTH, h=_LINEH)  # erase last line
+        draw.string("{} {}".format(self.letter, self._lookup(self.letter)), 0, _HEIGHT - _FONTH, width=_WIDTH, right=True)  # draw guess
+        draw.string(self.text[-1].replace(" ", "."), 0, _LINEH*(len(self.text)-1))  # draw last line
 
     def _lookup(self, s):
         i = 0 # start of the subtree (current node)
