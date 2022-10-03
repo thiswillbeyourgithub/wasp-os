@@ -70,7 +70,7 @@ class MorseApp():
 
     def foreground(self):
         try:
-            text = [t.strip() for t in wasp.system.get_settings("morse") if t.strip() != ""]
+            text = [t.strip() for t in wasp.system.get("morse") if t.strip() != ""]
             if len(text) > _MAXLINES:
                 self.text = text[-_MAXLINES:]
                 self.buffer = text[:-_MAXLINES]
@@ -83,7 +83,7 @@ class MorseApp():
                                   wasp.EventMask.SWIPE_UPDOWN)
 
     def background(self):
-        wasp.system.store_settings("morse", self.buffer + self.text)
+        wasp.system.set("morse", self.buffer + self.text)
 
     def swipe(self, event):
         self.adjust_buffer()

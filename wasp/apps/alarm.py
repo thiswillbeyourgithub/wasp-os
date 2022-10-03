@@ -87,7 +87,7 @@ class AlarmApp:
         self.pending_alarms = array.array('d', [0.0, 0.0, 0.0, 0.0])
         self.num_alarms = 0
 
-        alarms = wasp.system.get_settings("alarms")
+        alarms = wasp.system.get("alarms")
         print(alarms)
         if alarms:
             if isinstance(alarms, str):  # only 1 alarm found
@@ -155,9 +155,9 @@ class AlarmApp:
             for al in self.alarms:
                 if sum(al) != 0:
                     to_store.append(",".join([str(x) for x in al]))
-            wasp.system.store_settings("alarms", to_store)
+            wasp.system.set("alarms", to_store)
         else:
-            wasp.system.get_settings("alarms", delete=True)
+            wasp.system.get("alarms", delete=True)
 
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""

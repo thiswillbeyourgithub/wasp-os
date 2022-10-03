@@ -69,7 +69,7 @@ class PomodoroApp():
         self.state = _STOPPED
 
         # reloading last value
-        last_val = wasp.system.get_settings("pomodoro")
+        last_val = wasp.system.get("pomodoro")
         if last_val:
             self.nb_vibrat_per_alarm = int(last_val[0])
             self.queue = last_val[1]
@@ -214,7 +214,7 @@ class PomodoroApp():
             self.current_alarm = now + max(m * 60 - self.nb_vibrat_per_alarm, 1)
         wasp.system.set_alarm(self.current_alarm, self._alert)
         self._draw()
-        wasp.system.store_settings("pomodoro", [self.nb_vibrat_per_alarm, self.queue])
+        wasp.system.set("pomodoro", [self.nb_vibrat_per_alarm, self.queue])
 
     def _stop(self):
         self.state = _STOPPED

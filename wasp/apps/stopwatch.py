@@ -30,11 +30,11 @@ class StopwatchApp():
         self._timer_count = 0
         self._timer_last_count = -1
 
-        offset = wasp.system.get_settings("stopwatch_start")
+        offset = wasp.system.get("stopwatch_start")
         if offset:
             self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
             self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
-            splits = wasp.system.get_settings("stopwatch_splits")
+            splits = wasp.system.get("stopwatch_splits")
             if splits:
                 self._splits = [int(x) for x in splits]
                 self._nsplits = len(self._splits)
@@ -80,7 +80,7 @@ class StopwatchApp():
             del self._splits[9:]
             self._nsplits += 1
             wasp.watch.vibrator.pulse(duty=50, ms=50)
-            wasp.system.store_settings("stopwatch_splits", self._splits)
+            wasp.system.set("stopwatch_splits", self._splits)
         else:
             self._reset()
             wasp.watch.vibrator.pulse(duty=50, ms=50)
@@ -155,13 +155,13 @@ class StopwatchApp():
     def _timer_start(self):
         uptime = wasp.watch.rtc.get_uptime_ms() // 10
         self._timer_started_at = uptime - self._timer_count
-        wasp.system.store_settings("stopwatch_start", int(wasp.watch.rtc.time()))
+        wasp.system.set("stopwatch_start", int(wasp.watch.rtc.time()))
 
     def _timer_stop(self):
         self._timer_started_at = 0
         self._offset_cs = 0
-        wasp.system.get_settings("stopwatch_start", delete=True)
-        wasp.system.get_settings("stopwatch_splits", delete=True)
+        wasp.system.get("stopwatch_start", delete=True)
+        wasp.system.get("stopwatch_splits", delete=True)
 
     @property
     def _timer_started(self):
