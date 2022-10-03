@@ -62,9 +62,11 @@ class SettingsApp():
         if self._current_setting == 'Brightness':
             self._slider.touch(event)
             wasp.system.brightness = self._slider.value + 1
+            wasp.system.set("brightness", wasp.system.brightness)
         elif self._current_setting == 'Notification Level':
             self._nfy_slider.touch(event)
             wasp.system.notify_level = self._nfy_slider.value + 1
+            wasp.system.set("notify_level", wasp.system.notify_level)
         elif self._current_setting == 'Time':
             if self._HH.touch(event) or self._MM.touch(event):
                 now = list(wasp.watch.rtc.get_localtime())
@@ -82,14 +84,17 @@ class SettingsApp():
         elif self._current_setting == 'Units':
             if self._units_toggle.touch(event):
                 wasp.system.units = self._units[(self._units.index(wasp.system.units) + 1) % len(self._units)]
+            wasp.system.set("units", wasp.system.units)
         elif self._current_setting == 'Battery':
             if self._battery_toggle.touch(event):
                 wasp.system.battery_unit = self._batt[(self._batt.index(wasp.system.battery_unit) + 1) % len(self._batt)]
+            wasp.system.set("battery_unit", wasp.system.battery_unit)
         elif self._current_setting == "HRM freq":
             if self._hrm_slider.touch(event):
                 wasp.system.hrm_freq = self._hrm_freq_values[self._hrm_slider.value]
                 if wasp.system.hrm_freq != 0:
                     wasp.system.set_alarm(wasp.watch.rtc.time() + 60, wasp.system._perdiodic_heart_rate)
+            wasp.system.set("hrm_freq", wasp.system.hrm_freq)
         self._update()
 
     def swipe(self, event):
