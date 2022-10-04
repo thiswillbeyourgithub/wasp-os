@@ -78,16 +78,16 @@ class BatteryMeter:
             if watch.battery.charging():
                 col = 0x57e0 # green
             elif level <= 30:
-                col =  0xf800 # red
+                col = 0xf800 # red
             else:
                 col = 0xFFFF  # white
             draw.set_color(col)
             if unit == "mV":
-                mv = round(watch.battery.voltage_mv()/1000, 2)
-                disp = "   {}V".format(mv)
+                draw.string("{:02}V".format(
+                    watch.battery.voltage_mv()/1000
+                    ), x=217, y=0, width=13, right=True)
             else:
-                disp = "   {}%".format(level)
-            draw.string(disp, x=230, y=0, width=10, right=True)
+                draw.string("{}%".format(level), x=230, y=0, width=10, right=True)
             draw.set_font(old_font)
             draw.set_color(old_col)
             self.level = level
