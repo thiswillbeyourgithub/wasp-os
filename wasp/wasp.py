@@ -385,16 +385,12 @@ class Manager():
     def cancel_alarm(self, time, action):
         """Unqueue an alarm."""
         try:
-            alarms = self._alarms
             if time is None:
-                to_remove = []
-                for i, al in enumerate(alarms):
-                    if alarms[i][1] == action:
-                        to_remove.append(i)
-                for i in to_remove:
-                    alarms.remove(alarms[i])
+                for i, al in enumerate(self._alarms):
+                    if self._alarms[i][1] == action:
+                        self._alarms.remove(self._alarms[i])
             else:
-                alarms.remove((time, action))
+                self._alarms.remove((time, action))
         except:
             return False
         return True
