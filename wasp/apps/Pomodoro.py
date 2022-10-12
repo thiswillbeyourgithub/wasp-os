@@ -227,9 +227,6 @@ class PomodoroApp():
         """Draw the display from scratch."""
         draw = wasp.watch.drawable
         draw.fill()
-        sbar = wasp.system.bar
-        sbar.clock = True
-        sbar.draw()
 
         if self.state == _RINGING:
             draw.set_font(fonts.sans24)
@@ -287,6 +284,9 @@ class PomodoroApp():
             draw.set_font(fonts.sans24)
             draw.string(self.queue, 0, 35, right=True, width=240)
             draw.string("V{}".format(self.nb_vibrat_per_alarm), 0, 35)
+        sbar = wasp.system.bar
+        sbar.clock = True
+        sbar.draw()
 
     def _update(self):
         wasp.system.bar.update()
