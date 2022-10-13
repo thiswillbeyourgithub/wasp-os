@@ -182,7 +182,7 @@ class StopwatchApp():
         if self._timer_started_at:
             uptime = wasp.watch.rtc.get_uptime_ms() // 10
             self._timer_count = uptime - self._timer_started_at
-            if self._timer_count > 999*60*100:
+            if self._timer_count > 999*60*1000:
                 self._timer_reset()
 
         if self._timer_last_count != self._timer_count:
