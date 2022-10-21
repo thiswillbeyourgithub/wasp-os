@@ -50,7 +50,7 @@ _FIELDS = const(1234567890)
 _MAX_VIB = const(15)  # max number of second the watch you vibrate
 
 # you can add your own presets here:
-_PRESETS = ['15,4', '10,3', '20,5']
+_PRESETS = ['2,10', '10,2', '20,5']
 _TIME_MODE = const(1)  # if 0: duration of vibration will be discounted
 # from timer. if 1: not discounted
 
