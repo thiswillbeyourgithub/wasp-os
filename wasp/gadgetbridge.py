@@ -37,6 +37,18 @@ def _error(msg):
     json.dump({'t': 'error', 'msg': msg}, sys.stdout)
     sys.stdout.write('\r\n')
 
+def filter_notifications(msg):
+    """
+    only display notifications that contain one of the element of
+    wasp._notif_filter
+    """
+    if not hasattr(wasp, "_notif_filter"):
+        return True
+    for check in wasp._notif_filter:
+        for value in msg:
+            if check.lower() in str(value).lower():
+                return True
+    return False
 
 def GB(cmd):
     task = cmd['t']
@@ -48,8 +60,9 @@ def GB(cmd):
         elif task == 'notify':
             id = cmd['id']
             del cmd['id']
-            wasp.system.notify(id, cmd)
-            wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
+            if filter_notifications(cmd):
+                wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
+                wasp.system.notify(id, cmd)
         elif task == 'notify-':
             wasp.system.unnotify(cmd['id'])
         elif task == 'musicstate':
