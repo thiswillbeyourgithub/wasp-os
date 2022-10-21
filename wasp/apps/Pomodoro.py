@@ -51,6 +51,8 @@ _MAX_VIB = const(15)  # max number of second the watch you vibrate
 
 # you can add your own presets here:
 _PRESETS = ['15,4', '10,3', '20,5']
+_TIME_MODE = const(1)  # if 0: duration of vibration will be discounted
+# from timer. if 1: not discounted
 
 
 class PomodoroApp():
@@ -209,7 +211,7 @@ class PomodoroApp():
         m = self.squeue[self.last_run]
 
         # reduce by one second if repeating, to avoid growing offset
-        if first_run:
+        if first_run or _TIME_MODE == 1:
             self.current_alarm = now + max(m * 60, 1)
         else:
             self.current_alarm = now + max(m * 60 - self.nb_vibrat_per_alarm, 1)
