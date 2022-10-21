@@ -141,7 +141,7 @@ class Manager():
         if 'P8' in watch.os.uname().machine:
             self._nfylevels = [0, 225, 450]
         else:
-            self._nfylevels = [0, 40, 80]
+            self._nfylevels = [0, 40, 150]
         self._nfylev_ms = self._nfylevels[self._notifylevel - 1]
         self._button = PinHandler(watch.button)
         self._charging = True
