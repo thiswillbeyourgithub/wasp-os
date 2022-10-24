@@ -24,6 +24,7 @@ class LauncherApp():
         self._page = 0
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH |
+                                  wasp.EventMask.SWIPE_LEFTRIGHT |
                                   wasp.EventMask.SWIPE_UPDOWN)
 
     def swipe(self, event):
@@ -35,6 +36,12 @@ class LauncherApp():
                 i -= 1
                 wasp.watch.vibrator.pulse()
                 return
+        elif event[0] == wasp.EventType.LEFT:
+            wasp.system.switch(wasp.system.quick_ring[1])
+            return
+        elif event[0] == wasp.EventType.RIGHT:
+            wasp.system.switch(wasp.system.quick_ring[-1])
+            return
         else:
             i -= 1
             if i < 0:
