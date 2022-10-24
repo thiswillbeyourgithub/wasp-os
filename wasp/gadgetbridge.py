@@ -58,11 +58,18 @@ def GB(cmd):
         if task == 'find':
             wasp.watch.vibrator.pin(not cmd['n'])
         elif task == 'notify':
-            id = cmd['id']
-            del cmd['id']
             if filter_notifications(cmd):
+                id = cmd['id']
+                del cmd['id']
                 wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
                 wasp.system.notify(id, cmd)
+        elif task == 'call':
+            if filter_notifications(cmd):
+                id = cmd['id']
+                del cmd['id']
+                wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
+                wasp.system.notify(id, cmd)
+                wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
         elif task == 'notify-':
             wasp.system.unnotify(cmd['id'])
         elif task == 'musicstate':
