@@ -72,15 +72,15 @@ def GB(cmd):
         elif task == 'call':
             if cmd["cmd"] != "incoming":  # only care about incoming call
                 return
-            name = cmd["name"]
-            del cmd["name"]
-            number = cmd["number"]
-            del cmd["number"]
-            rest = "/".join(["{}:{}".format(k, v) for k, v in cmd.items()])
+            name = cmd["name"] if "name" in cmd else ""
+            number = cmd["number"] if "number" in cmd else ""
+            rest = "/".join(["{}:{}".format(k, v)
+                             for k, v in cmd.items()
+                             if k not in ["number", "name"]])
             del cmd
             wasp.system.notify(task, {
                 "title": task.title(),
-                "body": "{} at {}{}".format(name, number, rest),
+                "body": "{} at {}\n{}".format(name, number, rest),
                 })
             if not wasp.notify_level <= 1:  # silent mode
                 import time
