@@ -28,6 +28,7 @@ null = None
 true = True
 false = False
 
+
 def _info(msg):
     json.dump({'t': 'info', 'msg': msg}, sys.stdout)
     sys.stdout.write('\r\n')
@@ -36,6 +37,7 @@ def _info(msg):
 def _error(msg):
     json.dump({'t': 'error', 'msg': msg}, sys.stdout)
     sys.stdout.write('\r\n')
+
 
 def filter_notifications(msg):
     """
@@ -50,7 +52,9 @@ def filter_notifications(msg):
                 return True
     return False
 
+
 def GB(cmd):
+    "execute code depending on what gadget bridge asks"
     task = cmd['t']
     del cmd['t']
 
@@ -63,15 +67,29 @@ def GB(cmd):
                 del cmd['id']
                 wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
                 wasp.system.notify(id, cmd)
-        elif task == 'call':
-            if filter_notifications(cmd):
-                id = cmd['id']
-                del cmd['id']
-                wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
-                wasp.system.notify(id, cmd)
-                wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
         elif task == 'notify-':
             wasp.system.unnotify(cmd['id'])
+        elif task == 'call':
+            name = cmd["name"]
+            del cmd["name"]
+            number = cmd["number"]
+            del cmd["number"]
+            rest = ""
+            for k in [k for k in cmd.keys()]:
+                rest += "{}:{}/".format(k, cmd[k])
+            del cmd
+            wasp.system.notify(task, {
+                "title": task.title(),
+                "body": "{} at {}{}".format(name, number, rest),
+                })
+            if not wasp.notify_level <= 1:  # silent mode
+                import time
+                wasp.wake()
+                wasp.switch(wasp.notifier)
+                for i in range(3):
+                    wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
+                    time.sleep(0.3)
+                del time
         elif task == 'musicstate':
             wasp.system.toggle_music(cmd)
         elif task == 'musicinfo':
@@ -79,10 +97,23 @@ def GB(cmd):
         elif task == 'weather':
             wasp.system.set_weather_info(cmd)
         else:
-            pass
-            #_info('Command "{}" is not implemented'.format(cmd))
+            error_to_notification(
+                    title="GB_no_task",
+                    msg='GadgetBridge task not implemented: "{}": "{}"'.format(
+                        task, "/".join(cmd)
+                        )
+                    )
     except Exception as e:
+        error_to_notification(
+                title="GB_except",
+                msg="GB error: {} -  {}:{}".format(e, task, "/".join(cmd)))
         msg = io.StringIO()
         sys.print_exception(e, msg)
         _error(msg.getvalue())
         msg.close()
+
+
+def error_to_notification(title, msg):
+    wasp.system.notify(title, {"title": title, "body": msg})
+    if not wasp.notify_level <= 1:  # silent mode
+        wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
