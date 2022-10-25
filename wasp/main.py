@@ -23,8 +23,8 @@ try:
 except:
     pass
 
-# set notif_filter
-wasp._notif_filter = ["signal", "message", "call", "etar"]
+# set notifification filter
+wasp._notif_filter = ["signal", "message", "sms", "call", "etar", "mail", "calendar"]
 
 # start watch
 wasp.system.schedule()
