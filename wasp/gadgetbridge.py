@@ -70,6 +70,8 @@ def GB(cmd):
         elif task == 'notify-':
             wasp.system.unnotify(cmd['id'])
         elif task == 'call':
+            if cmd["cmd"] != "incoming":  # only care about incoming call
+                return
             name = cmd["name"]
             del cmd["name"]
             number = cmd["number"]
