@@ -94,7 +94,12 @@ class NotificationApp(PagerApp):
         note = notes.pop(next(iter(notes)))
         title = note['title'] if 'title' in note else 'Untitled'
         body = note['body'] if 'body' in note else ''
-        self._msg = '{}\n\n{}'.format(title, body)
+        rest = ""
+        for k in [k for k in note.keys() if k not in ["title", "body"]]:
+            rest += "{}:{}/".format(k, note[k])
+        if rest != "":
+            body += "\n({})".format(rest)
+        self._msg = '{}:\n{}'.format(title, body, rest)
 
         wasp.system.request_event(wasp.EventMask.TOUCH)
         super().foreground()
