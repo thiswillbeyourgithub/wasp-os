@@ -76,9 +76,7 @@ def GB(cmd):
             del cmd["name"]
             number = cmd["number"]
             del cmd["number"]
-            rest = ""
-            for k in [k for k in cmd.keys()]:
-                rest += "{}:{}/".format(k, cmd[k])
+            rest = "/".join(["{}:{}".format(k, v) for k, v in cmd.items()])
             del cmd
             wasp.system.notify(task, {
                 "title": task.title(),
@@ -102,13 +100,18 @@ def GB(cmd):
             error_to_notification(
                     title="GB_no_task",
                     msg='GadgetBridge task not implemented: "{}": "{}"'.format(
-                        task, "/".join(cmd)
-                        )
-                    )
+                        task,
+                        "/".join(["{}:{}".format(k, v)
+                                  for k, v in cmd.items()])
+                        ))
     except Exception as e:
         error_to_notification(
                 title="GB_except",
-                msg="GB error: {} -  {}:{}".format(e, task, "/".join(cmd)))
+                msg="GB error: {} -  {}:{}".format(
+                    e,
+                    task,
+                    "/".join(["{}:{}".format(k, v) for k, v in cmd.items()])
+                    ))
         msg = io.StringIO()
         sys.print_exception(e, msg)
         _error(msg.getvalue())
