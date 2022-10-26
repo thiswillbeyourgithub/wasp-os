@@ -118,6 +118,10 @@ def GB(cmd):
                                   for k, v in cmd.items()])
                         ))
     except Exception as e:
+        msg = io.StringIO()
+        sys.print_exception(e, msg)
+        _error(msg.getvalue())
+        msg.close()
         error_to_notification(
                 title="GB_except",
                 msg="GB error: {} -  {}:{}".format(
@@ -125,10 +129,6 @@ def GB(cmd):
                     task,
                     "/".join(["{}:{}".format(k, v) for k, v in cmd.items()])
                     ))
-        msg = io.StringIO()
-        sys.print_exception(e, msg)
-        _error(msg.getvalue())
-        msg.close()
 
 
 def error_to_notification(title, msg):
