@@ -53,6 +53,16 @@ def filter_notifications(msg):
     return False
 
 
+def vibration_timeout():
+    """
+    simple function called a few second after the 'find' command was sent to
+    make sure the watch does not vibrate for too long if the watch is not
+    found.
+    """
+    if not wasp.watch.vibrator.pin.value():  # is vibrating
+        wasp.watch.vibrator.pin(True)
+
+
 def GB(cmd):
     "execute code depending on what gadget bridge asks"
     task = cmd['t']
@@ -60,6 +70,9 @@ def GB(cmd):
 
     try:
         if task == 'find':
+            wasp.system.set_alarm(
+                    wasp.watch.rtc.time() + 5,
+                    vibration_timeout)
             wasp.watch.vibrator.pin(not cmd['n'])
         elif task == 'notify':
             if filter_notifications(cmd):
