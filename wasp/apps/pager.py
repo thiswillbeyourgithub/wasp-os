@@ -99,7 +99,7 @@ class NotificationApp(PagerApp):
                          if k not in ["title", "body"]])
         if rest != "":
             body += "\n({})".format(rest[:-1])
-        self._msg = '{}:\n{}{}'.format(title, body, rest)
+        self._msg = '{}:\n{}'.format(title, body)
 
         wasp.system.request_event(wasp.EventMask.TOUCH)
         super().foreground()

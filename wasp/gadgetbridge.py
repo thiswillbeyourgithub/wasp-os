@@ -44,11 +44,11 @@ def filter_notifications(msg):
     only display notifications that contain one of the element of
     wasp._notif_filter
     """
-    if not hasattr(wasp, "_notif_filter"):
+    if not hasattr(wasp.system, "_notif_filter"):
         return True
-    for check in wasp._notif_filter:
-        for value in msg:
-            if check.lower() in str(value).lower():
+    for check in wasp.system._notif_filter:
+        for k, v in msg.items():
+            if check.lower() in str(k).lower() or check.lower() in str(v).lower():
                 return True
     return False
 
@@ -76,15 +76,15 @@ def GB(cmd):
             wasp.watch.vibrator.pin(not cmd['n'])
         elif task == 'notify':
             if filter_notifications(cmd):
-                id = cmd['id']
-                del cmd['id']
+                id = cmd["id"]
+                del cmd["id"]
                 wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
                 wasp.system.notify(id, cmd)
         elif task == 'notify-':
             wasp.system.unnotify(cmd['id'])
         elif task == 'call':
-            # if cmd["cmd"] != "incoming":  # only care about incoming call
-            #     return
+            if cmd["cmd"] not in ["incoming", "outgoing"]:
+                raise Exception("Untested call notif")
             name = cmd["name"] if "name" in cmd else ""
             number = cmd["number"] if "number" in cmd else ""
             rest = "/".join(["{}:{}".format(k, v)
@@ -92,13 +92,13 @@ def GB(cmd):
                              if k not in ["number", "name"]])
             del cmd
             wasp.system.notify(task, {
-                "title": task.title(),
+                "title": task.upper(),
                 "body": "{} at {}\n{}".format(name, number, rest),
                 })
-            if not wasp.notify_level <= 1:  # silent mode
+            if not wasp.system.notify_level <= 1:  # silent mode
                 import time
-                wasp.wake()
-                wasp.switch(wasp.notifier)
+                wasp.system.wake()
+                wasp.system.switch(wasp.system.notifier)
                 for i in range(3):
                     wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
                     time.sleep(0.3)
@@ -133,5 +133,5 @@ def GB(cmd):
 
 def error_to_notification(title, msg):
     wasp.system.notify(title, {"title": title, "body": msg})
-    if not wasp.notify_level <= 1:  # silent mode
+    if not wasp.system.notify_level <= 1:  # silent mode
         wasp.watch.vibrator.pulse(ms=wasp.system.notify_duration)
