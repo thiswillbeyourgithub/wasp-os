@@ -188,8 +188,8 @@ class Manager():
             #self.register('apps.faces.FacesApp', no_except=True)
             self.register('apps.disaBLE.DisaBLEApp', False, no_except=True)
             #self.register('apps.Morse.MorseApp', False, no_except=True)
-            self.register('apps.calc.CalculatorApp', False, no_except=True)
-            self.register('apps.software.SoftwareApp', False, no_except=True)
+            #self.register('apps.calc.CalculatorApp', False, no_except=True)
+            #self.register('apps.software.SoftwareApp', False, no_except=True)
             self.register('apps.settings.SettingsApp', False, no_except=True)
         except MemoryError as err:
             self.notify(watch.rtc.get_uptime_ms(), {
