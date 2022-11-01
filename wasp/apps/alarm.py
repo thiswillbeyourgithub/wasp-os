@@ -74,6 +74,10 @@ _ENABLED_IDX = const(2)
 _HOME_PAGE = const(-1)
 _RINGING_PAGE = const(-2)
 
+# number of alarms
+_N_ALARM_SLOTS = const(8)  # 2 pages of 4 alarms
+
+
 class AlarmApp:
     """Allows the user to set a vibration alarm.
     """
@@ -83,12 +87,12 @@ class AlarmApp:
     def __init__(self):
         """Initialize the application."""
         self.page = _HOME_PAGE
-        self.alarms = (bytearray(3), bytearray(3), bytearray(3), bytearray(3))
-        self.pending_alarms = array.array('d', [0.0, 0.0, 0.0, 0.0])
+        self.alarms = list(bytearray(3) for i in range(_N_ALARM_SLOTS))
+        self.pending_alarms = array.array('d', (0.0 for i in range(_N_ALARM_SLOTS)))
         self.num_alarms = 0
+        self.scrolled_page = 0
 
         alarms = wasp.system.get("alarms")
-        print(alarms)
         if alarms:
             if isinstance(alarms, str):  # only 1 alarm found
                 alarms = [alarms]
@@ -123,11 +127,16 @@ class AlarmApp:
                          widgets.ToggleButton(55, 185, 40, 35, 'Su'))
         self.alarm_checks = (widgets.Checkbox(200, 57), widgets.Checkbox(200, 102),
                              widgets.Checkbox(200, 147), widgets.Checkbox(200, 192))
+        self._scroll_indicator = widgets.ScrollIndicator()
 
         self._deactivate_pending_alarms()
         self._draw()
 
-        wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_LEFTRIGHT | wasp.EventMask.BUTTON)
+        wasp.system.request_event(
+                wasp.EventMask.TOUCH |
+                wasp.EventMask.SWIPE_LEFTRIGHT |
+                wasp.EventMask.SWIPE_UPDOWN |
+                wasp.EventMask.BUTTON)
         wasp.system.request_tick(1000)
 
     def background(self):
@@ -147,6 +156,8 @@ class AlarmApp:
         del self.alarm_checks
         self.day_btns = None
         del self.day_btns
+        self._scroll_indicator = None
+        del self._scroll_indicator
 
         self._set_pending_alarms()
 
@@ -178,6 +189,13 @@ class AlarmApp:
         elif self.page > _HOME_PAGE:
             self._save_alarm()
             self._draw()
+        elif self.page == _HOME_PAGE:
+            if self.num_alarms >= 4:
+                if event[0] == wasp.EventType.DOWN:
+                    self.scrolled_page = max(self.scrolled_page - 1, 0)
+                elif (self.scrolled_page + 1) * 4 < _N_ALARM_SLOTS:
+                    self.scrolled_page = min(self.scrolled_page + 1, _N_ALARM_SLOTS // 4)
+            self._draw()
         else:
             wasp.system.navigate(event[0])
 
@@ -194,23 +212,27 @@ class AlarmApp:
             if self.del_alarm_btn.touch(event):
                 self._remove_alarm(self.page)
         elif self.page == _HOME_PAGE:
+            apo = self.scrolled_page * 4  # "alarm page offset" when scrolled
             for index, checkbox in enumerate(self.alarm_checks):
                 if index < self.num_alarms and checkbox.touch(event):
                     if checkbox.state:
-                        self.alarms[index][_ENABLED_IDX] |= _IS_ACTIVE
+                        self.alarms[index + apo][_ENABLED_IDX] |= _IS_ACTIVE
                     else:
-                        self.alarms[index][_ENABLED_IDX] &= ~_IS_ACTIVE
-                    self._draw(index)
+                        self.alarms[index + apo][_ENABLED_IDX] &= ~_IS_ACTIVE
+                    self._draw(index + apo)
                     return
             for index, alarm in enumerate(self.alarms):
+                if index < apo or index >= apo + 4:
+                    continue  # only care about alarms currently displayed
                 # Open edit page for clicked alarms
+                index2 = index - apo
                 if index < self.num_alarms and event[1] < 190 \
-                        and 60 + (index * 45) < event[2] < 60 + ((index + 1) * 45):
+                        and 60 + ((index2) * 45) < event[2] < 60 + (((index2) + 1) * 45):
                     self.page = index
                     self._draw()
                     return
                 # Add new alarm if plus clicked
-                elif index == self.num_alarms and 60 + (index * 45) < event[2]:
+                elif index == self.num_alarms and 60 + ((index2) * 45) < event[2]:
                     self.num_alarms += 1
                     self._draw(index)
                     return
@@ -244,7 +266,7 @@ class AlarmApp:
 
         self.page = _HOME_PAGE
 
-    def _draw(self, update_alarm_row=-1):
+    def _draw(self, update_alarm_row=_HOME_PAGE):
         if self.page == _RINGING_PAGE:
             self._draw_ringing_page()
         elif self.page > _HOME_PAGE:
@@ -294,34 +316,43 @@ class AlarmApp:
             self._draw_system_bar()
             draw.line(0, 50, 240, 50, width=1, color=wasp.system.theme('bright'))
 
+        apo = self.scrolled_page * 4
         for index in range(len(self.alarms)):
+            if index < apo or index >= apo + 4:
+                continue  # only care about alarms currently displayed
+            index2 = index - apo
             if index < self.num_alarms and (update_alarm_row == _HOME_PAGE or update_alarm_row == index):
                 self._draw_alarm_row(index)
-            elif index == self.num_alarms:
+            elif index == self.num_alarms and ((index2) % 4 != _HOUR_IDX or index2 == _HOUR_IDX):  # _HOUR_IDX is 0 but more compact
                 # Draw the add button
                 draw.set_color(wasp.system.theme('bright'))
                 draw.set_font(fonts.sans28)
-                draw.string('+', 100, 60 + (index * 45))
+                draw.string('+', 100, 60 + ((index2) * 45))
+
+        if self.num_alarms >= 4:
+            self._scroll_indicator.draw()
 
     def _draw_alarm_row(self, index):
         draw = wasp.watch.drawable
+        apo = self.scrolled_page * 4
+        index2 = index - apo
         alarm = self.alarms[index]
 
-        self.alarm_checks[index].state = alarm[_ENABLED_IDX] & _IS_ACTIVE
-        self.alarm_checks[index].draw()
+        self.alarm_checks[index2].state = alarm[_ENABLED_IDX] & _IS_ACTIVE
+        self.alarm_checks[index2].draw()
 
-        if self.alarm_checks[index].state:
+        if self.alarm_checks[index2].state:
             draw.set_color(wasp.system.theme('bright'))
         else:
             draw.set_color(wasp.system.theme('mid'))
 
         draw.set_font(fonts.sans28)
-        draw.string("{:02d}:{:02d}".format(alarm[_HOUR_IDX], alarm[_MIN_IDX]), 10, 60 + (index * 45), width=120)
+        draw.string("{:02d}:{:02d}".format(alarm[_HOUR_IDX], alarm[_MIN_IDX]), 10, 60 + ((index2) * 45), width=120)
 
         draw.set_font(fonts.sans18)
-        draw.string(self._get_repeat_code(alarm[_ENABLED_IDX]), 130, 70 + (index * 45), width=60)
+        draw.string(self._get_repeat_code(alarm[_ENABLED_IDX]), 130, 70 + ((index2) * 45), width=60)
 
-        draw.line(0, 95 + (index * 45), 240, 95 + (index * 45), width=1, color=wasp.system.theme('bright'))
+        draw.line(0, 95 + ((index2) * 45), 240, 95 + ((index2) * 45), width=1, color=wasp.system.theme('bright'))
 
     def _draw_system_bar(self):
         sbar = wasp.system.bar
