@@ -12,7 +12,7 @@ Simple stop/start watch with support for split times.
 import wasp
 import icons
 import fonts
-import os
+
 
 class StopwatchApp():
     """Stopwatch application."""
