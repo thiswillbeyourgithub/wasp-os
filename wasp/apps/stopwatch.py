@@ -35,6 +35,8 @@ class StopwatchApp():
             self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
             self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
             splits = wasp.system.get("stopwatch_splits")
+            if isinstance(splits, str):
+                splits = [splits]
             if splits:
                 self._splits = [int(x) for x in splits]
                 self._nsplits = len(self._splits)
