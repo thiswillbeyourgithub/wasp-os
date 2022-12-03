@@ -239,16 +239,11 @@ class AlarmApp:
 
     def _remove_alarm(self, alarm_index):
         # Shift alarm indices
-        for index in range(alarm_index, 3):
+        for index in range(alarm_index, len(self.alarms)-1):
             self.alarms[index][_HOUR_IDX] = self.alarms[index + 1][_HOUR_IDX]
             self.alarms[index][_MIN_IDX] = self.alarms[index + 1][_MIN_IDX]
             self.alarms[index][_ENABLED_IDX] = self.alarms[index + 1][_ENABLED_IDX]
-            self.pending_alarms[index] = self.pending_alarms[index + 1]
-
-        # Set last alarm to default
-        self.alarms[3][_HOUR_IDX] = 8
-        self.alarms[3][_MIN_IDX] = 0
-        self.alarms[3][_ENABLED_IDX] = 0
+        self.alarms[-1] = bytearray(3)
 
         self.page = _HOME_PAGE
         self.num_alarms -= 1
