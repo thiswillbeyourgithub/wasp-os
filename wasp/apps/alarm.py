@@ -74,8 +74,9 @@ _ENABLED_IDX = const(2)
 _HOME_PAGE = const(-1)
 _RINGING_PAGE = const(-2)
 
-# number of alarms
-_N_ALARM_SLOTS = const(8)  # 2 pages of 4 alarms
+# misc
+_N_ALARM_SLOTS = const(8)  # nb of alarms slots, e.g. 8 = 2 pages of 4 alarms each
+_MAX_DURATION = const(10)  # number of minutes to vibrate for to avoid draining the battery if you're not wearing the app
 
 
 class AlarmApp:
@@ -170,11 +171,17 @@ class AlarmApp:
         else:
             wasp.system.get("alarms", delete=True)
 
+        if hasattr(self, "_started_ringing"):
+            del self._started_ringing
+
     def tick(self, ticks):
         """Notify the application that its periodic tick is due."""
         if self.page == _RINGING_PAGE:
             wasp.watch.vibrator.pulse(duty=50, ms=500)
             wasp.system.keep_awake()
+            if abs(time.time() - self._started_ringing) * 60 > _MAX_DURATION:
+                wasp.system.navigate(wasp.EventType.HOME)  # stop ringing
+
         else:
             wasp.system.bar.update()
 
@@ -358,6 +365,7 @@ class AlarmApp:
         self.page = _RINGING_PAGE
         wasp.system.wake()
         wasp.system.switch(self)
+        self._started_ringing = time.time()
 
     def _snooze(self):
         now = wasp.watch.rtc.get_localtime()
