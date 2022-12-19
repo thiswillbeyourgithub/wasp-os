@@ -179,7 +179,7 @@ class AlarmApp:
         if self.page == _RINGING_PAGE:
             wasp.watch.vibrator.pulse(duty=50, ms=500)
             wasp.system.keep_awake()
-            if abs(time.time() - self._started_ringing) * 60 > _MAX_DURATION:
+            if abs(wasp.watch.rtc.time() - self._started_ringing) * 60 > _MAX_DURATION:
                 wasp.system.navigate(wasp.EventType.HOME)  # stop ringing
 
         else:
@@ -365,7 +365,7 @@ class AlarmApp:
         self.page = _RINGING_PAGE
         wasp.system.wake()
         wasp.system.switch(self)
-        self._started_ringing = time.time()
+        self._started_ringing = wasp.watch.rtc.time()
 
     def _snooze(self):
         now = wasp.watch.rtc.get_localtime()
