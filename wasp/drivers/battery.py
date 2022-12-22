@@ -64,16 +64,21 @@ class Battery(object):
         """
         raw = self._battery.read_u16()
         mv = (2 * 3300 * raw) // 65535
+        cache = self._cache
 
-        if len(self._cache) < 2:
-            self._cache.append(mv)
+        if self._charging.value():  # if charging, reset cache
+            if len(cache):
+                cache = array.array("I")
             return mv
-        if len(self._cache) > 2:
-            self._cache = self._cache[-2:]
-        if mv != self._cache[0] and mv != self._cache[1]:
-            self._cache[0] = self._cache[1]
-            self._cache[1] = mv
-        return sum(self._cache) / 2
+        if len(cache) < 2:
+            cache.append(mv)
+            return mv
+        if len(cache) > 2:  # should not happen
+            cache = cache[-2:]
+        if mv != cache[0] and mv != cache[1]:
+            cache[0] = cache[1]
+            cache[1] = mv
+        return sum(cache) / 2
 
     def level(self):
         """Estimate the battery level.
