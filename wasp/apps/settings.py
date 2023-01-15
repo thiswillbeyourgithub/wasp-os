@@ -32,7 +32,7 @@ class SettingsApp():
         self._already_initialized = False
 
     def _actual_init(self):
-        self._slider = wasp.widgets.Slider(3, 10, 90)
+        self._bri_slider = wasp.widgets.Slider(4, 10, 90)
         self._nfy_slider = wasp.widgets.Slider(3, 10, 90)
         self._hrm_slider = wasp.widgets.Slider(5, 10, 90)
         self._hrm_freq_values = (0, 5, 15, 30, 60)
@@ -54,14 +54,14 @@ class SettingsApp():
     def foreground(self):
         if not self._already_initialized:
             self._already_initialized = self._actual_init()
-        self._slider.value = wasp.system.brightness - 1
+        self._bri_slider.value = wasp.system.brightness
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_UPDOWN)
 
     def touch(self, event):
         if self._current_setting == 'Brightness':
-            self._slider.touch(event)
-            wasp.system.brightness = self._slider.value + 1
+            self._bri_slider.touch(event)
+            wasp.system.brightness = self._bri_slider.value
             wasp.system.set("brightness", wasp.system.brightness)
         elif self._current_setting == 'Notification Level':
             self._nfy_slider.touch(event)
@@ -121,7 +121,7 @@ class SettingsApp():
         draw.set_font(fonts.sans24)
         draw.string(self._current_setting, 0, 6, width=240)
         if self._current_setting == 'Brightness':
-            self._slider.value = wasp.system.brightness - 1
+            self._bri_slider.value = wasp.system.brightness
         elif self._current_setting == 'Notification Level':
             self._nfy_slider.value = wasp.system.notify_level - 1
         elif self._current_setting == 'Time':
@@ -158,9 +158,11 @@ class SettingsApp():
                 say = "High"
             elif wasp.system.brightness == 2:
                 say = "Mid"
-            else:
+            elif wasp.system.brightness == 1:
                 say = "Low"
-            self._slider.update()
+            else:  # == 0
+                say = "Very Low"
+            self._bri_slider.update()
             draw.string(say, 0, 150, width=240)
         elif self._current_setting == "HRM freq":
             self._hrm_slider.draw()
