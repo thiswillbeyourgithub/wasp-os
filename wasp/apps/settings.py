@@ -54,7 +54,6 @@ class SettingsApp():
     def foreground(self):
         if not self._already_initialized:
             self._already_initialized = self._actual_init()
-        self._bri_slider.value = wasp.system.brightness
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH | wasp.EventMask.SWIPE_UPDOWN)
 
