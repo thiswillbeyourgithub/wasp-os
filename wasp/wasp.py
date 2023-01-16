@@ -674,16 +674,27 @@ class Manager():
                 content = f.readlines()[0]
                 if delete:
                     os.unlink("settings/" + name)
-                if ";" in content:
-                    content = content.split(";")
-                    for i, c in enumerate(content):
-                        if content[i] == "True":
-                            content[i] = True
-                        elif content[i] == "False":
-                            content[i] = False
-                    return content
-                else:
-                    return content
+                while ";;" in content:
+                    content = content.replace(";;", ";None;")
+                content = content.split(";")
+                for i in range(len(content)):
+                    # cast boolean types
+                    if content[i] == "True":
+                        content[i] = True
+                    elif content[i] == "False":
+                        content[i] = False
+                    elif content[i] == "None":
+                        content[i] = None
+                    # cast ints
+                    else:
+                        if content[i].startswith("-") and content[i][1:].isdigit():
+                            content[i] = -int(content[i][1:])
+                        elif content[i].isdigit():
+                            content[i] = int(content[i])
+
+                while "" in content:  # example: "value;" -> ["value", ""]
+                    content.remove("")
+                return content
             return None
         except Exception:
             return None
