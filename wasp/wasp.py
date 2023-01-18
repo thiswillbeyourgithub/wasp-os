@@ -650,6 +650,8 @@ class Manager():
         to store alarms or stopwatch start time.
         If value is a list, the items will be separated by a ";". Hence, ";" is
         not supposed to appear in 'value'.
+        All retrieved value will be string, except True, False and None which
+        will be replaced automatically.
         """
         if "settings" not in os.listdir():
             os.mkdir("settings")
@@ -669,6 +671,12 @@ class Manager():
             return None
 
     def get(self, name, delete=False):
+        """Retrieve values stored in the 'settings' folder.
+        All retrieved value will be string, except True, False and None which
+        will be replaced automatically.
+
+        See self.set dostring for more.
+        """
         try:
             with open("settings/" + name, "r") as f:
                 content = f.readlines()[0]
@@ -685,15 +693,6 @@ class Manager():
                         content[i] = False
                     elif content[i] == "None":
                         content[i] = None
-                    # cast ints
-                    else:
-                        if content[i].startswith("-") and content[i][1:].isdigit():
-                            content[i] = -int(content[i][1:])
-                        elif content[i].isdigit():
-                            content[i] = int(content[i])
-
-                while "" in content:  # example: "value;" -> ["value", ""]
-                    content.remove("")
                 return content
             return None
         except Exception:
