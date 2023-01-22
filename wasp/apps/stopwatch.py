@@ -30,7 +30,7 @@ class StopwatchApp():
         self._timer_count = 0
         self._timer_last_count = -1
 
-        offset = wasp.system.get("stopwatch_start")
+        offset = wasp.system.get("stopwatch_start")[0]
         if offset:
             self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
             self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
