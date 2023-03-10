@@ -30,19 +30,24 @@ class StopwatchApp():
         self._timer_count = 0
         self._timer_last_count = -1
 
-        offset = wasp.system.get("stopwatch_start")[0]
+        self._offset_cs = 0
+        self._timer_started_at = 0
+        offset = wasp.system.get("stopwatch_start")
         if offset:
-            self._offset_cs = int(int(offset) - wasp.watch.rtc.time()) * 100
-            self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
-            splits = wasp.system.get("stopwatch_splits")
-            if isinstance(splits, str):
-                splits = [splits]
-            if splits:
-                self._splits = [int(x) for x in splits]
-                self._nsplits = len(self._splits)
-        else:
-            self._offset_cs = 0
-            self._timer_started_at = 0
+            try:
+                self._offset_cs = int(int(offset[0]) - wasp.watch.rtc.time()) * 100
+                self._timer_started_at = wasp.watch.rtc.get_uptime_ms() // 10 - self._timer_count + self._offset_cs
+                splits = wasp.system.get("stopwatch_splits")
+                if isinstance(splits, str):
+                    splits = [splits]
+                if splits:
+                    self._splits = [int(x) for x in splits]
+                    self._nsplits = len(self._splits)
+            except Exception as err:
+                wasp.system.notify(wasp.watch.rtc.get_uptime_ms(), {
+                    "src": "Stopwatch",
+                    "title": "Stopwatch loading failed",
+                    "body": "Error when loading start time '{}'".format(err)})
 
         return True
 
