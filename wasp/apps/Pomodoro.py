@@ -71,11 +71,11 @@ class PomodoroApp():
         self.state = _STOPPED
 
         # reloading last value
-        last_val = wasp.system.get("pomodoro")
-        if last_val:
+        try:
+            last_val = wasp.system.get("pomodoro")
             self.nb_vibrat_per_alarm = int(last_val[0])
             self.queue = last_val[1]
-        else:
+        except:
             self.queue = _PRESETS[0]
             self.nb_vibrat_per_alarm = 10 # number of times to vibrate each time
         return True
