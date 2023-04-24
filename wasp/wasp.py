@@ -181,7 +181,7 @@ class Manager():
             self.register('apps.timer.TimerApp', True, no_except=True)
             self.register('apps.stopwatch.StopwatchApp', True, no_except=True)
 
-            self.register('apps.SleepTk.SleepTkApp', False, no_except=True)
+            self.register('apps.sleep_tk.SleepTkApp', False, no_except=True)
             self.register('apps.Pomodoro.PomodoroApp', False, no_except=True)
             self.register('apps.alarm.AlarmApp', False, no_except=True)
 
