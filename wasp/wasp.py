@@ -522,35 +522,25 @@ class Manager():
                 self.sleep()
 
             gc.collect()
-        else:
-            if 1 == self._button.get_event():
-                self.wake()
-            else:
-                self._force_sleep()
+        else:  # is sleeping already
+            # check every 1s if the button was pressed
+            button_timer = machine.Timer(1, mode=machine.Timer.PERIODIC, period=1000000, callback=self._check_button_event)
+            button_timer.start()
+
+            if alarms:  # sleeping and alarms: sleep until button pressed or next alarm
+                until = alarms[0][0]
+                while not self.sleep_at and rtc.time() < until:
+                    machine.deepsleep()
+            else:  # sleeping without alarms: sleep until button pressed
+                while not self.sleep_at:
+                    machine.deepsleep()
+            button_timer.stop()
 
     @micropython.native
-    def _force_sleep(self):
-        """
-        if sleeping and no alarms: sleep until button is pressed
-        if sleeping and alarms: sleep until button is pressed or until next alarm
-        """
-        alarms = self._alarms
-        rtc = watch.rtc
-        if alarms:
-            until = alarms[0][0] - 1
-            # sleep until next alarm or button is pressed
-            while rtc.time() < until:
-                machine.deepsleep()
-                if self._button.get_event() == 1:
-                    self.wake()
-                    break
-        else:
-            # no alarm: sleep until button is pressed
-            while True:
-                machine.deepsleep()
-                if self._button.get_event() == 1:
-                    self.wake()
-                    break
+    def _check_button_event(self, timer):
+        "button_timer's 1s callback is to check button press here"
+        if self._button.get_event() == 1:
+            self.wake()
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
