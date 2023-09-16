@@ -523,8 +523,8 @@ class Manager():
 
             gc.collect()
 
-        elif alarms: # sleeping and alarms: sleep until button pressed or next alarm
-            while rtc.time() < alarms[0][0]:
+        elif alarms:  # sleeping and alarms: sleep until button pressed or next alarm
+            while rtc.update() and rtc.time() < alarms[0][0]:
                 machine.deepsleep()
                 if self._button.get_event():
                     self.wake()
