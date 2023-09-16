@@ -523,26 +523,24 @@ class Manager():
 
             gc.collect()
 
-        else:  # is sleeping already
-            if alarms:  # sleeping and alarms: sleep until button pressed or next alarm
-                until = alarms[0][0]
-                while not self.sleep_at and rtc.time() < until:
-                    machine.deepsleep(1000)
-                    if self._button.get_event():
-                        self.wake()
-                        return
-            else:  # sleeping without alarms: sleep until button pressed
-                while not self.sleep_at:
-                    machine.deepsleep(1000)
-                    if self._button.get_event():
-                        self.wake()
-                        return
+        elif alarms: # sleeping and alarms: sleep until button pressed or next alarm
+            while not self.sleep_at and rtc.time() < alarms[0][0]:
+                machine.deepsleep(1000)
+                if self._button.get_event():
+                    self.wake()
+                    return
+        else:  # sleeping without alarms: sleep until button pressed
+            while not self.sleep_at:
+                machine.deepsleep(1000)
+                if self._button.get_event():
+                    self.wake()
+                    return
 
         # Currently there is no code to control how fast the system
         # ticks. In other words this code will break if we improve the
         # power management... we are currently relying on not being able
         # to stay in the low-power state for very long.
-        machine.deepsleep(1000)
+        machine.deepsleep(300)  # sleep for at most Xms
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
