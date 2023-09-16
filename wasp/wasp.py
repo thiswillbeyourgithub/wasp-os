@@ -496,13 +496,8 @@ class Manager():
         update = rtc.update()
 
         alarms = self._alarms
-        if update and alarms:
-            now = rtc.time()
-            head = alarms[0]
-
-            if head[0] <= now:
-                alarms.remove(head)
-                head[1]()
+        if update and alarms and alarms[0][0] <= rtc.time():
+            alarms.pop(0)[1]()
 
         if self.sleep_at:
             if update and self.tick_expiry:
@@ -528,8 +523,7 @@ class Manager():
 
             gc.collect()
         else:
-            if 1 == self._button.get_event() or \
-                    self._charging != watch.battery.charging():
+            if 1 == self._button.get_event():
                 self.wake()
 
     def run(self, no_except=True):
