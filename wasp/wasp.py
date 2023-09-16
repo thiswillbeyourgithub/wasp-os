@@ -525,6 +525,32 @@ class Manager():
         else:
             if 1 == self._button.get_event():
                 self.wake()
+            else:
+                self._force_sleep()
+
+    @micropython.native
+    def _force_sleep(self):
+        """
+        if sleeping and no alarms: sleep until button is pressed
+        if sleeping and alarms: sleep until button is pressed or until next alarm
+        """
+        alarms = self._alarms
+        rtc = watch.rtc
+        if alarms:
+            until = alarms[0][0] - 1
+            # sleep until next alarm or button is pressed
+            while rtc.time() < until:
+                machine.deepsleep()
+                if self._button.get_event() == 1:
+                    self.wake()
+                    break
+        else:
+            # no alarm: sleep until button is pressed
+            while True:
+                machine.deepsleep()
+                if self._button.get_event() == 1:
+                    self.wake()
+                    break
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
