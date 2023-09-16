@@ -522,25 +522,27 @@ class Manager():
                 self.sleep()
 
             gc.collect()
-        else:  # is sleeping already
-            # check every 1s if the button was pressed
-            button_timer = machine.Timer(1, mode=machine.Timer.PERIODIC, period=1000000, callback=self._check_button_event)
-            button_timer.start()
 
+        else:  # is sleeping already
             if alarms:  # sleeping and alarms: sleep until button pressed or next alarm
                 until = alarms[0][0]
                 while not self.sleep_at and rtc.time() < until:
-                    machine.deepsleep()
+                    machine.deepsleep(1000)
+                    if self._button.get_event():
+                        self.wake()
+                        return
             else:  # sleeping without alarms: sleep until button pressed
                 while not self.sleep_at:
-                    machine.deepsleep()
-            button_timer.stop()
+                    machine.deepsleep(1000)
+                    if self._button.get_event():
+                        self.wake()
+                        return
 
-    @micropython.native
-    def _check_button_event(self, timer):
-        "button_timer's 1s callback is to check button press here"
-        if self._button.get_event() == 1:
-            self.wake()
+        # Currently there is no code to control how fast the system
+        # ticks. In other words this code will break if we improve the
+        # power management... we are currently relying on not being able
+        # to stay in the low-power state for very long.
+        machine.deepsleep(1000)
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
@@ -564,7 +566,6 @@ class Manager():
             # below
             while True:
                 self._tick()
-                machine.deepsleep()
 
         while True:
             try:
@@ -582,12 +583,6 @@ class Manager():
                 if 'print_exception' in dir(watch):
                     watch.print_exception(e)
                 self.switch(CrashApp(e))
-
-            # Currently there is no code to control how fast the system
-            # ticks. In other words this code will break if we improve the
-            # power management... we are currently relying on not being able
-            # to stay in the low-power state for very long.
-            machine.deepsleep()
 
     def _work(self):
         self._scheduled = False
