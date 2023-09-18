@@ -21,9 +21,12 @@ import sys
 import watch
 import widgets
 import os
+import time
 
 from apps.launcher import LauncherApp
 from apps.pager import PagerApp, CrashApp, NotificationApp
+
+_INTERVAL = micropython.const(1000)
 
 class EventType():
     """Enumerated interface actions.
@@ -525,13 +528,17 @@ class Manager():
 
         elif alarms:  # sleeping and alarms: sleep until button pressed or next alarm
             while rtc.update() and rtc.time() < alarms[0][0]:
-                machine.deepsleep()
+                bef = time.ticks_ms()
+                while time.ticks_diff(time.ticks_ms(), bef) <= _INTERVAL:
+                    machine.deepsleep()
                 if self._button.get_event():
                     self.wake()
                     return
         else:  # sleeping without alarms: sleep until button pressed
             while True:
-                machine.deepsleep()
+                bef = time.ticks_ms()
+                while time.ticks_diff(time.ticks_ms(), bef) <= _INTERVAL:
+                    machine.deepsleep()
                 if self._button.get_event():
                     self.wake()
                     return
