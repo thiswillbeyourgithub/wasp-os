@@ -533,7 +533,7 @@ class Manager():
                     machine.deepsleep()
                 if self._button.get_event():
                     self.wake()
-                    return
+                    break
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
