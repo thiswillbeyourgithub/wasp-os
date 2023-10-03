@@ -26,7 +26,7 @@ import time
 from apps.launcher import LauncherApp
 from apps.pager import PagerApp, CrashApp, NotificationApp
 
-_INTERVAL = micropython.const(1000000)  # 1s in us
+_INTERVAL = micropython.const(500000)  # 0.5s in us
 
 class EventType():
     """Enumerated interface actions.
