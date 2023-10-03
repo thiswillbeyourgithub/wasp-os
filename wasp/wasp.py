@@ -527,11 +527,13 @@ class Manager():
             gc.collect()
 
         elif not alarms:  # screen off and no alarms: sleep profoundly
-            bef = time.ticks_us()
-            while time.ticks_diff(time.ticks_us(), bef) <= _INTERVAL:
-                machine.deepsleep()
-            if self._button.get_event():
-                self.wake()
+            while True:
+                bef = time.ticks_us()
+                while time.ticks_diff(time.ticks_us(), bef) <= _INTERVAL:
+                    machine.deepsleep()
+                if self._button.get_event():
+                    self.wake()
+                    break
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
