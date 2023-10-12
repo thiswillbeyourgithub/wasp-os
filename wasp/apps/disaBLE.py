@@ -16,7 +16,6 @@ workaround the "enable" button restarts the watch.
 
 import wasp
 import widgets
-import ble
 
 class DisaBLEApp():
     NAME = 'DisaBLE'
@@ -37,6 +36,7 @@ class DisaBLEApp():
     )
 
     def foreground(self):
+        import ble
         self._draw()
         wasp.system.request_event(wasp.EventMask.TOUCH)
 
