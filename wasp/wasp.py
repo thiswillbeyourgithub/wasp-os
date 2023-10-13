@@ -534,6 +534,9 @@ class Manager():
                 if self._button.get_event():
                     self.wake()
                     break
+        else:
+            if self._button.get_event():
+                self.wake()
 
     def run(self, no_except=True):
         """Run the system manager synchronously.
