@@ -26,7 +26,7 @@ import time
 from apps.launcher import LauncherApp
 from apps.pager import PagerApp, CrashApp, NotificationApp
 
-_INTERVAL = micropython.const(500000)  # 0.5s in us
+_INTERVAL = micropython.const(1000)  # 1s in ms
 
 class EventType():
     """Enumerated interface actions.
@@ -528,8 +528,8 @@ class Manager():
 
         elif not alarms:  # screen off and no alarms: sleep profoundly
             while True:
-                bef = time.ticks_us()
-                while time.ticks_diff(time.ticks_us(), bef) <= _INTERVAL:
+                bef = time.ticks_ms()
+                while time.ticks_diff(time.ticks_ms(), bef) <= _INTERVAL:
                     machine.deepsleep()
                 if self._button.get_event():
                     self.wake()
